@@ -70,15 +70,12 @@ const Chat = (props: Props) => {
 
   return (
     <>
-      <div className="w-[97vw] ml-auto h-screen flex flex-col justify-cente bg-gray-100 overflow-hidden relative pt-20  ">
+      <div className=" h-screen flex flex-col justify-cente bg-gray-100 overflow-hidden relative pt-20  ">
         {/* BG Designs */}
-        <div className="w-[30rem] absolute top-[30%] left-[80%]  rotate-45  h-[50rem] bg-gradient-to-br from-priClr/60 to-secClr/60 rounded-tr-2xl  blur-3xl " />
-        <div className="w-[30rem] absolute bottom-[30%] right-[80%]  rotate-45  h-[50rem] bg-gradient-to-br from-priClr/60 to-secClr/60 rounded-tr-2xl  blur-3xl " />
+        {/* <div className="w-[30rem] absolute top-[30%] left-[80%]  rotate-45  h-[50rem] bg-gradient-to-br from-priClr/60 to-secClr/60 rounded-tr-2xl  blur-3xl " />
+        <div className="w-[30rem] absolute bottom-[30%] right-[80%]  rotate-45  h-[50rem] bg-gradient-to-br from-priClr/60 to-secClr/60 rounded-tr-2xl  blur-3xl " /> */}
         {/* --- BG Designs --- */}
-        {/* Title Bar */}
-        <div className="bg-white backdrop-blur-lg absolute top-0 z-10 dark:bg-darkBgClr/70 w-full py-4 text-center h-max border-b-2 border-priClr">
-          <h1 className="text-xl font-black  ">AI-Cademy Assistant</h1>
-        </div>
+
         {/* Default Boxes */}
         {chat.length === 0 && (
           <div className="grid grid-cols-2 gap-12  w-7/12 m-auto ">

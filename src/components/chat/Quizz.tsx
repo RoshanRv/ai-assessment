@@ -202,7 +202,7 @@ const Quizz = ({ page }: { page: string }) => {
     <main
       className={`bg-gray-100 left-0 w-full top-0 h-full ${
         showQuiz ? "translate-y-0" : "translate-y-full"
-      } z-10 absolute dark:bg-gray-800 flex  transition-transform  flex-col py-10 `}
+      } z-10 absolute  flex  transition-transform  flex-col py-10 `}
     >
       {/* Backdrop */}
       <h1 className="font-black select-none text-priClr/5 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[28rem]">
