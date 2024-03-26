@@ -230,6 +230,7 @@ const Quizz = ({ page }: { page: string }) => {
 
               <div className="flex flex-col gap-1  ">
                 <input
+                  onKeyUp={(e) => e.key == "Enter" && handleBegin()}
                   value={ques}
                   onChange={(e) => setQues(e.target.value)}
                   type="text"
@@ -406,7 +407,7 @@ const Quizz = ({ page }: { page: string }) => {
                 disabled={isSubmit ? false : true}
                 onClick={isSubmit ? handleBegin : () => null}
                 className={`${
-                  isSubmit ? "bg-priClr" : "bg-gray-300"
+                  isSubmit ? "bg-priClr" : "bg-priClr/20"
                 } px-20 py-3 z-10  text-white border-2 border-black boxShadow boxShadow  font-bold w-max mx-auto `}
               >
                 Next Question
