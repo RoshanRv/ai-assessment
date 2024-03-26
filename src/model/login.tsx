@@ -1,6 +1,9 @@
 import mongoose, { Schema } from "mongoose";
 
 const schema = new Schema({
+  role: {
+    type: String,
+  },
   userName: {
     type: String,
   },
