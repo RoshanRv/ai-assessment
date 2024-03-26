@@ -1,11 +1,25 @@
+"use client";
+
 import Button from "@/components/button/Button";
-import React from "react";
-import { FaUserCircle } from "react-icons/fa";
-import { RiLockPasswordFill } from "react-icons/ri";
+import axios from "axios";
+import React, { useState } from "react";
 
 type Props = {};
 
 const page = (props: Props) => {
+  const [userName, setUserName] = useState("");
+  const [pass, setPass] = useState("");
+  const Login = async () => {
+    if (userName && pass) {
+      await axios.post("http://localhost:3000/api/teacher/login", {
+        name: userName,
+        pass: pass,
+      });
+    } else {
+      alert("Fill the details");
+    }
+  };
+
   return (
     <div className=" w-full h-[100vh] flex justify-center items-center bg">
       {/* --- BG Designs --- */}
@@ -20,7 +34,9 @@ const page = (props: Props) => {
           </div>
           <input
             type="text"
-            placeholder="Email"
+            placeholder="Staff Name or Email"
+            value={userName}
+            onChange={(e) => setUserName(e.target.value)}
             className="px-2 h-full outline-none w-full boxShadow"
           />
         </div>
@@ -34,11 +50,13 @@ const page = (props: Props) => {
           <input
             type="text"
             placeholder="Password"
-            className="px-2 h-full outline-none w-full boxShadow "
+            value={pass}
+            onChange={(e) => setPass(e.target.value)}
+            className="px-2 h-full outline-none w-full boxShadow"
           />
         </div>
 
-        <Button />
+        <Button onclick={Login} />
       </div>
     </div>
   );
