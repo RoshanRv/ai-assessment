@@ -82,9 +82,9 @@ const Quizz = ({ page }: { page: string }) => {
     visible: string[][];
   }>();
   const [currQues, setCurrQues] = useState({
-    question: "",
-    options: [""],
-    answer: "",
+    question: "2 + 2 ",
+    options: ["3", "4", "5", "6"],
+    answer: "4",
   });
   const [loading, setLoading] = useState(false);
   const [ans, setAns] = useState("");
@@ -200,9 +200,7 @@ const Quizz = ({ page }: { page: string }) => {
 
   return (
     <main
-      className={`bg-gray-100 left-0 w-full top-0 h-full ${
-        showQuiz ? "translate-y-0" : "translate-y-full"
-      } z-10 absolute dark:bg-gray-800 flex  transition-transform  flex-col py-10 `}
+      className={`bg-gray-100 left-0 w-full top-0 h-full z-10 absolute dark:bg-gray-800 flex  transition-transform  flex-col py-10 `}
     >
       {/* Backdrop */}
       <h1 className="font-black select-none text-priClr/5 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[28rem]">
@@ -227,13 +225,7 @@ const Quizz = ({ page }: { page: string }) => {
             </p>
             <div className="flex gap-6 items-end w-full z-10 mx-auto  text-center justify-center ">
               {/* Go Back to Chat */}
-              <button
-                onClick={() => setShowQuiz(false)}
-                className={`px-8 py-3 w-max  border-2 border-black bg-priClr boxShadow text-white font-bold`}
-              >
-                <BiChevronLeft className="inline-flex text-2xl" />
-                <span>Chat</span>
-              </button>
+
               {/*  */}
 
               <div className="flex flex-col gap-1  ">
@@ -413,7 +405,9 @@ const Quizz = ({ page }: { page: string }) => {
               <button
                 disabled={isSubmit ? false : true}
                 onClick={isSubmit ? handleBegin : () => null}
-                className="px-20 py-3 z-10 bg-priClr text-white border-2 border-black boxShadow boxShadow  font-bold w-max mx-auto "
+                className={`${
+                  isSubmit ? "bg-priClr" : "bg-gray-300"
+                } px-20 py-3 z-10  text-white border-2 border-black boxShadow boxShadow  font-bold w-max mx-auto `}
               >
                 Next Question
               </button>
@@ -492,7 +486,7 @@ const Quizz = ({ page }: { page: string }) => {
                 onClick={() => reset()}
                 className="px-20 py-3 z-10 bg-priClr text-white border-2 border-black boxShadow   font-bold w-max mx-auto "
               >
-                {`Go to Chat`}
+                {`Go to Quizz`}
               </button>
             ) : (
               <button
