@@ -1,16 +1,12 @@
 "use client";
 
-import React, { ReactNode, useEffect, useRef, useState } from "react";
-import { MdChecklist, MdFeedback, MdSummarize } from "react-icons/md";
-import { BiSolidConversation } from "react-icons/bi";
-import { RiSendPlane2Fill } from "react-icons/ri";
 import { HfInference } from "@huggingface/inference";
+import { ReactNode, useEffect, useRef, useState } from "react";
 
-import axios from "axios";
-import Image from "next/image";
 import Quizz from "@/components/chat/Quizz";
 import useQuizz from "@/store/useQuiz";
 import { zephyrQuery } from "@/utils/chat/zephyrLLM";
+import axios from "axios";
 
 type Props = {};
 

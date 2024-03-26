@@ -51,9 +51,8 @@ const HomeContent = () => {
         </section>
         <section>
           <h1 className="text-lg font-medium text-center text-white">
-            Welcome to Ai-Cademy, your gateway to educational excellence. At
-            Ai-Cademy, we offer a vast array of educational resources designed
-            to empower students on their learning journey.
+            Revolutionize Your Learning Adventure: Experience Education Where AI
+            Innovation Drives Personalized Support and Unlocks Potential
           </h1>
         </section>
         <section className="flex justify-center gap-6">
@@ -65,10 +64,10 @@ const HomeContent = () => {
             <AiOutlineDoubleRight className="text-[23px] text-priClr" />
           </Link>
           <Link
-            href={"/dashboard"}
+            href={"/login"}
             className="bg-priClr  text-white capitalize border-[3px] border-black boxShadow flex items-center gap-2 px-7 py-3 rounde-md shadow-black shadow-sm font-semibold"
           >
-            <p className="font-bold">Login As Staff</p>
+            <p className="font-bold">Login</p>
             <AiOutlineDoubleRight className="text-[23px] text-white" />
           </Link>
         </section>
