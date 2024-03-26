@@ -76,16 +76,24 @@ const Quizz = ({ page }: { page: string }) => {
   } = useQuizz();
 
   const route = useRouter();
-
   const [history, setHistory] = useState<{
     internal: string[][];
     visible: string[][];
   }>();
-  const [currQues, setCurrQues] = useState({
-    question: "2 + 2 ",
-    options: ["3", "4", "5", "6"],
-    answer: "4",
-  });
+  const [currQnIndex, setCurrQnIndex] = useState(0);
+  const [questions, setQuestions] = useState([
+    {
+      question: "2 + 2 ",
+      options: ["3", "4", "5", "6"],
+      answer: "4",
+    },
+    {
+      question: "3 + 3 ",
+      options: ["3", "4", "5", "6"],
+      answer: "6",
+    },
+  ]);
+  const [isEdit, setIsEdit] = useState(false);
   const [loading, setLoading] = useState(false);
   const [ans, setAns] = useState("");
   const [isSubmit, setIsSubmit] = useState(false);
@@ -112,35 +120,41 @@ const Quizz = ({ page }: { page: string }) => {
 
   const handleParseQuestion = (ques: string) => {
     selectedType == "tf" &&
-      setCurrQues({
-        question: ques.split("Question:")[1].split(".")[0],
-        options: ["True", "False"],
-        answer: ques.split("Question:")[1].split("Answer:")[1].split(".")[0],
-      });
+      setQuestions((prev) => [
+        ...prev,
+        {
+          question: ques.split("Question:")[1].split(".")[0],
+          options: ["True", "False"],
+          answer: ques.split("Question:")[1].split("Answer:")[1].split(".")[0],
+        },
+      ]);
     selectedType == "mcq" &&
-      setCurrQues({
-        question: ques
-          .split("Question:")[1]
-          .split("?")[0]
-          .replace(/\\n/g, "\n")
-          .replace(/&#x27;/g, "'"),
-        options: ques
-          .split("Question:")[1]
-          .split("Options:")[1]
-          .split("Answer:")[0]
-          .split("\n")
-          .map((opt) => opt.trim()),
-        answer: ques
-          .split("Question:")[1]
-          .split("Options:")[1]
-          .split("Answer:")[1]
-          .split(".")[0]
-          .split("Would")[0]
-          .split("You")[0]
-          .split("Please")[0]
-          .replace(/\\n/g, "\n")
-          .replace(/&#x27;/g, "'"),
-      });
+      setQuestions((prev) => [
+        ...prev,
+        {
+          question: ques
+            .split("Question:")[1]
+            .split("?")[0]
+            .replace(/\\n/g, "\n")
+            .replace(/&#x27;/g, "'"),
+          options: ques
+            .split("Question:")[1]
+            .split("Options:")[1]
+            .split("Answer:")[0]
+            .split("\n")
+            .map((opt) => opt.trim()),
+          answer: ques
+            .split("Question:")[1]
+            .split("Options:")[1]
+            .split("Answer:")[1]
+            .split(".")[0]
+            .split("Would")[0]
+            .split("You")[0]
+            .split("Please")[0]
+            .replace(/\\n/g, "\n")
+            .replace(/&#x27;/g, "'"),
+        },
+      ]);
   };
 
   const handleBegin = async () => {
@@ -332,24 +346,56 @@ const Quizz = ({ page }: { page: string }) => {
           {!loading ? (
             <div className="w-1/2 mx-auto flex flex-col gap-8">
               {/* Ques */}
-              <h1 className="bg-priClr boxShadow p-4 text-white border-2  border-black   font-bold text-2xl ">
-                {`${currQues.question} ?`}
-              </h1>
+              <input
+                disabled={!isEdit}
+                onChange={(e) => {
+                  setQuestions((prev) => {
+                    const newQn = [...prev];
+                    newQn[currQnIndex].question = e.target.value;
+                    return newQn;
+                  });
+                }}
+                value={questions[currQnIndex]?.question}
+                className="bg-priClr boxShadow p-4 text-white border-2  border-black   font-bold text-2xl "
+              >
+                {/* {`${questions[currQnIndex]?.question} ?`} */}
+              </input>
               {/* Opts */}
               <div className="grid grid-cols-2 gap-4">
-                {currQues.options.map((opt, i) =>
+                {questions[currQnIndex].options.map((opt, i) =>
                   opt ? (
-                    <button
-                      onClick={() => !isSubmit && setAns(opt.trim())}
-                      className={`p-4 text-xl font-bold shadow-md ${
-                        ans === opt
-                          ? "bg-priClr boxShadow text-white border-2 border-black boxShadow"
-                          : "bg-white hover:bg-gray-100 border-2 border-priClr text-priClr"
-                      }     hover:scale-95  transition-all `}
-                      key={i}
-                    >
-                      {opt}
-                    </button>
+                    isEdit ? (
+                      <input
+                        disabled={!isEdit}
+                        onChange={(e) => {
+                          setQuestions((prev) => {
+                            const newQn = [...prev];
+                            newQn[currQnIndex].options[i] =
+                              e.target.value || " ";
+                            return newQn;
+                          });
+                        }}
+                        value={opt}
+                        className={` p-4 text-xl font-bold shadow-md ${
+                          ans === opt
+                            ? "bg-priClr boxShadow text-white border-2 border-black boxShadow"
+                            : "bg-white hover:bg-gray-100 border-2 border-priClr text-priClr"
+                        }     hover:scale-95  transition-all `}
+                        key={i}
+                      ></input>
+                    ) : (
+                      <button
+                        onClick={() => !isSubmit && setAns(opt.trim())}
+                        className={` p-4 text-xl text-left font-bold shadow-md ${
+                          ans === opt
+                            ? "bg-priClr boxShadow text-white border-2 border-black boxShadow"
+                            : "bg-white hover:bg-gray-100 border-2 border-priClr text-priClr"
+                        }     hover:scale-95 transition-all `}
+                        key={i}
+                      >
+                        {opt}
+                      </button>
+                    )
                   ) : (
                     <></>
                   )
@@ -369,7 +415,7 @@ const Quizz = ({ page }: { page: string }) => {
                 <Image
                   fill
                   src={
-                    ans.trim() === currQues.answer.trim()
+                    ans.trim() === questions[currQnIndex].answer.trim()
                       ? "/correct.gif"
                       : "/wrong.gif"
                   }
@@ -379,14 +425,14 @@ const Quizz = ({ page }: { page: string }) => {
               {/* Result */}
               <div
                 className={` text-center font-semibold boxShadow text-white p-3 ${
-                  ans.trim() === currQues.answer.trim()
+                  ans.trim() === questions[currQnIndex].answer.trim()
                     ? "bg-emerald-500"
                     : "bg-red-500"
                 } `}
               >
-                {ans.trim() === currQues.answer.trim()
+                {ans.trim() === questions[currQnIndex].answer.trim()
                   ? "Correct"
-                  : `Wrong, Correct Answer: ${currQues.answer}`}
+                  : `Wrong, Correct Answer: ${questions[currQnIndex].answer}`}
               </div>
             </div>
           )}
@@ -396,7 +442,9 @@ const Quizz = ({ page }: { page: string }) => {
                 onClick={() => {
                   setIsSubmit(true);
                   setScore(
-                    ans.trim() === currQues.answer.trim() ? score + 1 : score
+                    ans.trim() === questions[currQnIndex].answer.trim()
+                      ? score + 1
+                      : score
                   );
                 }}
                 className="px-20 py-3 z-10 bg-priClr boxShadow text-white border-2 border-black  font-bold w-max mx-auto "
