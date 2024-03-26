@@ -1,6 +1,7 @@
 "use client";
 
 import useQuizz from "@/store/useQuiz";
+import useUser from "@/store/useUser";
 import axios from "axios";
 import Image from "next/image";
 import Link from "next/link";
@@ -74,6 +75,8 @@ const Quizz = ({ page }: { page: string }) => {
     setShowQuiz,
     showQuiz,
   } = useQuizz();
+
+  const role = useUser((state) => state.role);
 
   const route = useRouter();
   const [history, setHistory] = useState<{
@@ -214,48 +217,49 @@ const Quizz = ({ page }: { page: string }) => {
 
   return (
     <main
-      className={`bg-gray-100 left-0 w-full top-0 h-full z-10 absolute  flex  transition-transform  flex-col py-10 `}
+      className={`bg-gray-100 left-0 bg  w-full top-0 h-full z-10 absolute  flex  transition-transform gap-6 flex-col py-10 `}
     >
-      {/* Backdrop */}
-      <h1 className="font-black select-none text-priClr/5 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[28rem]">
-        Q<span className="text-[22rem]">u</span>
-        <span className="text-[20rem]">i</span>
-        <span className="text-[18rem]">z</span>
-        <span className="text-[18rem]">z</span>
-        <span className="text-[16rem]">z</span>
-        <span className="text-[16rem]">z</span>
-      </h1>
+      {/* BACK */}
+      <div className="flex gap-2 items-center px-10">
+        {!isStart && (
+          <Link
+            href={"/dashboard"}
+            className="bg-priClr  text-white capitalize border-[3px] border-black boxShadow flex items-center gap-2 px-3 py-2 rounde-md shadow-black shadow-sm font-semibold"
+          >
+            <BiChevronLeft className="text-3xl " />
+          </Link>
+        )}
+        <h4 className="text-2xl font-medium px-4 py-2 bg-white boxShadow w-max border-[3px] border-priClr ">
+          {role === "staff" ? `Validate Assessment` : "Take Assessment"}
+        </h4>
+      </div>
       {/* Chooooses */}
       {!isStart && (
         <div
-          className={`flex flex-col justify-around h-full ${
+          className={`flex flex-col w-4/12 bg-white px-10 boxShadow border-[3px] border-priClr mx-auto justify-around h-full ${
             isStart ? "opacity-0" : "opacity-100"
           } transition-all `}
         >
           {/*          Quizzz Types           */}
           <div className="flex flex-col gap-4">
-            <p className="font-semibold text-priClr text-3xl text-center ">
-              Quizzz is about?
+            <p className="font-semibold text-priClr  text-3xl text-left ">
+              Assessment Is About
             </p>
-            <div className="flex gap-6 items-end w-full z-10 mx-auto  text-center justify-center ">
-              {/* Go Back to Chat */}
-
-              {/*  */}
-
-              <div className="flex flex-col gap-1  ">
+            <div className="flex gap-6  w-full z-10  text-center  ">
+              <div className="flex flex-col gap-1 w-full  ">
                 <input
                   onKeyUp={(e) => e.key == "Enter" && handleBegin()}
                   value={ques}
                   onChange={(e) => setQues(e.target.value)}
                   type="text"
-                  className="p-4 border-2 border-priClr bg-white boxShadow outline-0 w-96"
-                  placeholder="What Is The Quizz About?"
+                  className="p-4 border-2 border-priClr bg-white  boxShadow outline-0 w-full"
+                  placeholder="Eg: Solar System"
                 />
               </div>
             </div>
           </div>
           {/* Type */}
-          <div className="mx-auto text-center flex flex-col gap-4 z-10">
+          {/* <div className="mx-auto text-center flex flex-col gap-4 z-10">
             <p className="font-semibold text-priClr text-3xl">Quizzz Type?</p>
             <div className="flex gap-12 items-center">
               <button
@@ -278,7 +282,7 @@ const Quizz = ({ page }: { page: string }) => {
               >
                 {`True Or False`}
               </button>
-              {/* <button
+              <button
                 onClick={() => setSelectedType("short")}
                 className={`px-8 py-3 w-max   ${
                   selectedType === "short"
@@ -287,51 +291,53 @@ const Quizz = ({ page }: { page: string }) => {
                 } font-bold`}
               >
                 {`Short Answers`}
-              </button> */}
+              </button>
             </div>
-          </div>
+          </div> */}
           {/* Level */}
-          <div className="mx-auto text-center flex flex-col gap-4 z-10">
-            <p className="font-semibold text-priClr text-3xl">Quizzz Level?</p>
-            <div className="flex gap-12 items-center">
+          <div className="  flex flex-col gap-4 z-10">
+            <p className="font-semibold text-priClr text-3xl">
+              Difficulty Level
+            </p>
+            <div className="grid grid-cols-1 gap-6   items-start">
               <button
-                onClick={() => setSelectedLevel("begin")}
-                className={`px-8 py-3 w-max   ${
-                  selectedLevel === "begin"
+                onClick={() => setSelectedLevel("easy")}
+                className={`px-8 py-3   ${
+                  selectedLevel === "easy"
                     ? "bg-priClr text-white border-2 border-black boxShadow"
                     : "text-priClr bg-white border-2 border-priClr"
                 } font-bold`}
               >
-                {`Beginner`}
+                {`Easy`}
               </button>
               <button
-                onClick={() => setSelectedLevel("inter")}
-                className={`px-8 py-3 w-max   ${
-                  selectedLevel === "inter"
+                onClick={() => setSelectedLevel("medium")}
+                className={`px-8 py-3   ${
+                  selectedLevel === "medium"
                     ? "bg-priClr text-white border-2 border-black boxShadow"
                     : "text-priClr bg-white border-2 border-priClr"
                 } font-bold`}
               >
-                {`Intermediate`}
+                {`Medium`}
               </button>
               <button
-                onClick={() => setSelectedLevel("advance")}
-                className={`px-8 py-3 w-max   ${
-                  selectedLevel === "advance"
+                onClick={() => setSelectedLevel("hard")}
+                className={`px-8 py-3   ${
+                  selectedLevel === "hard"
                     ? "bg-priClr text-white border-2 border-black boxShadow"
                     : "text-priClr bg-white border-2 border-priClr"
                 } font-bold`}
               >
-                {`Advanced`}
+                {`Hard`}
               </button>
             </div>
           </div>
           {/* Button */}
           <button
             onClick={handleBegin}
-            className="px-20 py-4 z-10 bg-priClr border-2 border-black boxShadow text-white   font-bold w-max mx-auto "
+            className="px-20 py-3 z-10 bg-priClr border-2 border-black boxShadow text-white   font-bold w-full mx-auto "
           >
-            Begin Quizzz
+            {role === "staff" ? "Validate Assessment" : "Begin Assessment"}
           </button>
         </div>
       )}
