@@ -137,9 +137,9 @@ html .dark {
   cursor: pointer;
 }
 
-.boxShadow:hover {
+/* .boxShadow:hover {
   box-shadow: none;
-}
+} */
 
 /*  Gear Loading   */
 
@@ -218,4 +218,8 @@ html .dark {
 
 .boxShadow:hover {
   box-shadow: 0px 0px black;
+}
+
+.CardShadow {
+  box-shadow: 5px 5px black;
 }
