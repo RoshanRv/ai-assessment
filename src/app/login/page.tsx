@@ -3,6 +3,8 @@
 import Button from "@/components/button/Button";
 import axios from "axios";
 import React, { useState } from "react";
+import { FaUserCircle } from "react-icons/fa";
+import { RiLockPasswordFill } from "react-icons/ri";
 
 type Props = {};
 
@@ -34,7 +36,7 @@ const page = (props: Props) => {
           </div>
           <input
             type="text"
-            placeholder="Staff Name or Email"
+            placeholder="Email"
             value={userName}
             onChange={(e) => setUserName(e.target.value)}
             className="px-2 h-full outline-none w-full boxShadow"
