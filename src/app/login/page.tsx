@@ -13,10 +13,14 @@ const page = (props: Props) => {
   const [pass, setPass] = useState("");
   const Login = async () => {
     if (userName && pass) {
-      await axios.post("http://localhost:3000/api/teacher/login", {
-        name: userName,
-        pass: pass,
-      });
+      const { data } = await axios.post(
+        "http://localhost:3000/api/teacher/login",
+        {
+          name: userName,
+          pass: pass,
+        }
+      );
+      localStorage.setItem("ai-assessment", JSON.stringify(data));
     } else {
       alert("Fill the details");
     }

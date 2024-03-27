@@ -10,7 +10,7 @@ export const gemini = () => {
     const model = genAI.getGenerativeModel({ model: "gemini-pro" });
     const prompt = `You’re a experienced Teacher,Your task is to generate 10 multiple-choice questions in JSON format based on a topic selected by the user and the preferred difficulty level[HARD,MEDIUM or EASY]. Each question should include four choices. Provide both the topic and the desired difficulty level, and you need to generate the questions accordingly.
     "user":{
-        "topic":"solar system",
+        "topic":"deep learning",
         "difficulty":"MEDIUM",
     },
     Here's an example of the JSON format for a single question:
