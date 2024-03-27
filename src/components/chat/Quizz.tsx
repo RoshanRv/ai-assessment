@@ -78,7 +78,6 @@ const Quizz = ({ page }: { page: string }) => {
     setShowQuiz,
     showQuiz,
   } = useQuizz();
-
   const role = useUser((state) => state.role);
 
   const route = useRouter();
@@ -106,10 +105,10 @@ const Quizz = ({ page }: { page: string }) => {
   const [ans, setAns] = useState("");
   const [isSubmit, setIsSubmit] = useState(false);
 
-  const [feedback, setFeedback] = useState({
-    guidance: [],
-    areas_to_improve: [],
-  });
+  const [feedback, setFeedback] = useState<null | {
+    areas_to_improve: string[];
+    guidance: string[];
+  }>(null);
 
   const [percentage, setPercentage] = useState(0);
   const [isPass, setIsPass] = useState(false);
@@ -126,8 +125,16 @@ const Quizz = ({ page }: { page: string }) => {
     setIsEnd(false);
     setQuesNo(0);
     setScore(0);
-    setFeedback({ guidance: [], areas_to_improve: [] });
+    setFeedback(null);
   };
+
+  useEffect(() => {
+    if (role == "staff") {
+      setIsEdit(false);
+    } else {
+      setIsEdit(true);
+    }
+  }, [isStart]);
 
   const handleParseQuestion = (ques: string) => {
     selectedType == "tf" &&
@@ -207,6 +214,11 @@ const Quizz = ({ page }: { page: string }) => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const storeChanges = async () => {
+    setIsStart(false);
+    // setIsEnd(true);
   };
 
   const handleFeedback = async () => {
@@ -417,7 +429,8 @@ const Quizz = ({ page }: { page: string }) => {
                             questions[currQnIndex].answer === opt
                               ? "bg-green-600 "
                               : "cursor-pointer "
-                          } my-auto w-7 h-7 rounded-md text-white text-center font-bold`}>
+                          } my-auto w-7 h-7 rounded-md text-white text-center font-bold`}
+                        >
                           ✔️
                         </div> */}
                         <input
@@ -559,8 +572,7 @@ const Quizz = ({ page }: { page: string }) => {
                   onClick={() => {
                     console.log("validate");
 
-                    if (questions.length <= currQnIndex + 1)
-                      return handleFeedback();
+                    if (questions.length <= currQnIndex + 1) return;
                     setLoading(false);
                     setIsSubmit(false);
                     setAns("");
@@ -575,8 +587,7 @@ const Quizz = ({ page }: { page: string }) => {
                   onClick={() => {
                     console.log("submit");
 
-                    if (questions.length <= currQnIndex + 1)
-                      return handleFeedback();
+                    if (questions.length <= currQnIndex + 1) return;
                     setLoading(false);
                     setIsSubmit(false);
                     setAns("");
@@ -585,6 +596,12 @@ const Quizz = ({ page }: { page: string }) => {
                   className="px-20 py-3 z-10 bg-priClr text-white border-2 border-black boxShadow boxShadow  font-bold w-max mx-auto "
                 >
                   {`Next Question`}
+                </button>
+                <button
+                  onClick={storeChanges}
+                  className="px-20 py-3 z-10 bg-priClr text-white border-2 border-black boxShadow boxShadow  font-bold w-max mx-auto "
+                >
+                  save
                 </button>
               </div>
             ))}
