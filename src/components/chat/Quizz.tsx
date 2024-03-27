@@ -1,6 +1,7 @@
 "use client";
 
 import useQuizz from "@/store/useQuiz";
+import useToast from "@/store/useToast";
 import useUser from "@/store/useUser";
 import { gemini } from "@/utils/chat/geminiAPI";
 import axios from "axios";
@@ -84,6 +85,8 @@ const Quizz = ({ page }: { page: string }) => {
     internal: string[][];
     visible: string[][];
   }>();
+  const setToast = useToast((state) => state.setToast);
+  const [isParsed, setIsParsed] = useState(true);
   const [currQnIndex, setCurrQnIndex] = useState(0);
   const [questions, setQuestions] = useState([
     {
@@ -183,10 +186,20 @@ const Quizz = ({ page }: { page: string }) => {
       //   ][1]
       // );
       const ans = await gemini(ques, selectedLevel);
-      console.log(ans);
-      setQuestions(ans);
+
+      if (ans) {
+        setIsParsed(true);
+        setQuestions(ans);
+      } else {
+        setIsParsed(false);
+        setIsStart(false);
+        setToast({ msg: "Parse Failed", variant: "error" });
+      }
     } catch (e) {
       console.log(e);
+      setIsStart(false);
+      setIsParsed(false);
+      setToast({ msg: "Parse Failed", variant: "error" });
     } finally {
       setLoading(false);
     }
