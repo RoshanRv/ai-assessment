@@ -539,6 +539,7 @@ const Quizz = ({ page }: { page: string }) => {
                   onClick={() => {
                     console.log("validate");
 
+                    if (questions.length <= currQnIndex + 1) return;
                     setLoading(false);
                     setIsSubmit(false);
                     setAns("");
