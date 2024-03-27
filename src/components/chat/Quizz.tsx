@@ -109,6 +109,9 @@ const Quizz = ({ page }: { page: string }) => {
   const [feedback, setFeedback] = useState<null | {
     areas_to_improve: string[];
     guidance: string[];
+    strengths: string[];
+    weaknesses: string[];
+    encouragement: string;
   }>(null);
 
   const [percentage, setPercentage] = useState(0);
@@ -131,7 +134,10 @@ const Quizz = ({ page }: { page: string }) => {
     setQuesNo(0);
     setScore(0);
     setFeedback(null);
+    setAnsWithQns([]);
   };
+
+  console.log(feedback);
 
   useEffect(() => {
     if (role == "staff") {
@@ -180,6 +186,8 @@ const Quizz = ({ page }: { page: string }) => {
       ]);
   };
 
+  console.log(feedback);
+
   const handleBegin = async () => {
     setIsStart(true);
     setLoading(true);
@@ -209,13 +217,13 @@ const Quizz = ({ page }: { page: string }) => {
       } else {
         setIsParsed(false);
         setIsStart(false);
-        setToast({ msg: "Parse Failed", variant: "error" });
+        setToast({ msg: "Parse Failed, Please Try Again", variant: "error" });
       }
     } catch (e) {
       console.log(e);
       setIsStart(false);
       setIsParsed(false);
-      setToast({ msg: "Parse Failed", variant: "error" });
+      setToast({ msg: "Parse Failed, Please Try Again", variant: "error" });
     } finally {
       setLoading(false);
     }
@@ -228,24 +236,16 @@ const Quizz = ({ page }: { page: string }) => {
 
   const handleFeedback = async () => {
     try {
-      setLoading(true);
+      // setLoading(true);
       console.log("feedback");
-      const feedback = await geminiFeedback(score, ques);
+      const feedback = await geminiFeedback(
+        score,
+        ques,
+        JSON.stringify(ansWithQns)
+      );
       setFeedback(feedback);
       setIsEnd(true);
       return;
-
-      const { data } = await axios.post(`http://localhost:5000/api/v1/chat`, {
-        user_input: `can you provide me a feedback on how can I improve, as I scored ${score} out of ${quesNo} in test about ${ques}?`,
-      });
-      setFeedback(
-        data.results[0].history.visible[
-          data.results[0].history.visible.length - 1
-        ][1]
-          .split("Of course!")[1]
-          .replace(/\\n/g, "\n")
-          .replace(/&#x27;/g, "'")
-      );
     } catch (e) {
       console.log(e);
     } finally {
@@ -649,15 +649,45 @@ const Quizz = ({ page }: { page: string }) => {
               <h1 className="text-lg font-semibold">Areas to Improve</h1>
               <ul>
                 {feedback["areas_to_improve"]?.map((point) => {
-                  return <li className="list-item list-disc ml-10">{point}</li>;
+                  return (
+                    <li key={point} className="list-item list-disc ml-10">
+                      {point}
+                    </li>
+                  );
                 })}
               </ul>
               <h1 className="font-semibold text-lg">Guidance</h1>
               <ul>
                 {feedback["guidance"]?.map((point) => {
-                  return <li className="list-item list-disc ml-10">{point}</li>;
+                  return (
+                    <li key={point} className="list-item list-disc ml-10">
+                      {point}
+                    </li>
+                  );
                 })}
               </ul>
+              <h1 className="font-semibold text-lg">Strengths</h1>
+              <ul>
+                {feedback["strengths"]?.map((point) => {
+                  return (
+                    <li key={point} className="list-item list-disc ml-10">
+                      {point}
+                    </li>
+                  );
+                })}
+              </ul>
+              <h1 className="font-semibold text-lg">Weakness</h1>
+              <ul>
+                {feedback["weaknesses"]?.map((point) => {
+                  return (
+                    <li key={point} className="list-item list-disc ml-10">
+                      {point}
+                    </li>
+                  );
+                })}
+              </ul>
+              <h1 className="font-semibold text-lg">Encouragement</h1>
+              <ul>{<li className=" ml-10">{feedback["encouragement"]}</li>}</ul>
             </div>
           )}
           {/* Loading */}
