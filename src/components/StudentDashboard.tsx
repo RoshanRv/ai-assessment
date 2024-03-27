@@ -2,6 +2,7 @@
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import AIGEN from "@/assets/ai_gen.png";
+import AILOGO from "@/assets/Hackfest-2023.png";
 import Link from "next/link";
 import axios from "axios";
 
@@ -77,6 +78,21 @@ const StudentDashboard = (props: Props) => {
             className="bg-priClr  text-white capitalize border-[3px] border-black boxShadow flex items-center gap-2 px-7 py-3 rounde-md shadow-black shadow-sm font-semibold"
           >
             <p className="font-bold">Take AI Generated Assessments</p>
+          </Link>
+        </div>
+      </>
+      {/*  Generate Comic */}
+      <>
+        <h4 className="text-2xl font-medium px-4 py-2 bg-white boxShadow w-max border-[3px] border-priClr ">{`Generate Comic`}</h4>
+        <div className="boxShadow  justify-center items-center flex flex-col gap-y-6  border-[3px] bg-white z-10 border-priClr p-3 py-5 w-full">
+          <div className="relative w-[17%] ">
+            <Image alt="" src={AILOGO} />
+          </div>
+          <Link
+            href={"/generate-comic"}
+            className="bg-priClr  text-white capitalize border-[3px] border-black boxShadow flex items-center gap-2 px-7 py-3 rounde-md shadow-black shadow-sm font-semibold"
+          >
+            <p className="font-bold">Connect with Comic</p>
           </Link>
         </div>
       </>
