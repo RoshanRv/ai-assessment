@@ -1,6 +1,7 @@
 "use client";
 
 import Button from "@/components/button/Button";
+import useToast from "@/store/useToast";
 import axios from "axios";
 import React, { useState } from "react";
 import { FaUserCircle } from "react-icons/fa";
@@ -11,18 +12,25 @@ type Props = {};
 const page = (props: Props) => {
   const [userName, setUserName] = useState("");
   const [pass, setPass] = useState("");
+
+  const setToast = useToast((state) => state.setToast);
+
   const Login = async () => {
-    if (userName && pass) {
-      const { data } = await axios.post(
-        "http://localhost:3000/api/teacher/login",
-        {
-          name: userName,
-          pass: pass,
-        }
-      );
-      localStorage.setItem("ai-assessment", JSON.stringify(data));
-    } else {
-      alert("Fill the details");
+    try {
+      if (userName && pass) {
+        const { data } = await axios.post(
+          "http://localhost:3000/api/teacher/login",
+          {
+            name: userName,
+            pass: pass,
+          }
+        );
+        localStorage.setItem("ai-assessment", JSON.stringify(data));
+      } else {
+        setToast({ msg: "Fill All Details", variant: "error" });
+      }
+    } catch (err) {
+      setToast({ msg: "Invalid Credentials", variant: "error" });
     }
   };
 
