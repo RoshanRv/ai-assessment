@@ -3,18 +3,27 @@ import { NextRequest, NextResponse } from "next/server";
 import teacherLogin from "@/model/questions";
 
 export async function POST(req: NextRequest) {
-  const { questionId, questions }: any = await req.json();
+  try {
+    const { data }: any = await req.json();
+    await connectMongoDB();
+    const val = await teacherLogin.create({
+      topic: data.topic,
+      staffName: data.staffName,
+      difficulty: data.difficulty,
+      questions: data.questions,
+    });
 
-  await connectMongoDB();
-  const val = await teacherLogin.findOneAndUpdate(
-    { questionId: questionId },
-    { questions: questions }
-  );
-  console.log(val);
-
-  if (val) {
-    return NextResponse.json(true);
-  } else {
-    return NextResponse.json(false);
+    if (val) {
+      return NextResponse.json(true);
+    }
+  } catch (e) {
+    return NextResponse.json(
+      {
+        message: "error",
+      },
+      {
+        status: 400,
+      }
+    );
   }
 }

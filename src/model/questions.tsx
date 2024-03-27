@@ -5,9 +5,6 @@ const schema = new Schema(
     staffName: {
       type: String,
     },
-    quesId: {
-      type: String,
-    },
     topic: {
       type: String,
     },

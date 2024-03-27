@@ -12,7 +12,7 @@ import { FaUserCircle } from "react-icons/fa";
 type Props = {};
 
 const page = (props: Props) => {
-  // const router = useT
+  const router = useRouter();
   const [userName, setUserName] = useState("");
   const [pass, setPass] = useState("");
 
@@ -24,7 +24,7 @@ const page = (props: Props) => {
     try {
       if (userName && pass) {
         const { data } = await axios.post(
-          "http://localhost:3000/api/teacher/login",
+          `${process.env.NEXT_PUBLIC_API_ENDPOINT}/api/teacher/login`,
           {
             name: userName,
             pass: pass,
@@ -37,6 +37,7 @@ const page = (props: Props) => {
         localStorage.setItem("ai-assessment", JSON.stringify(data));
         setUser(data);
         setRole(data.role);
+        router.push("/dashboard");
       } else {
         setToast({ msg: "Fill All Details", variant: "error" });
       }
