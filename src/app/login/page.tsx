@@ -12,20 +12,19 @@ import { FaUserCircle } from "react-icons/fa";
 type Props = {};
 
 const page = (props: Props) => {
-  // const router = useT
+  const router = useRouter();
   const [userName, setUserName] = useState("");
   const [pass, setPass] = useState("");
 
   const setToast = useToast((state) => state.setToast);
   const setUser = useUser((state) => state.setUser);
   const setRole = useUser((state) => state.setRole);
-  const router = useRouter();
 
   const Login = async () => {
     try {
       if (userName && pass) {
         const { data } = await axios.post(
-          "http://localhost:3000/api/teacher/login",
+          `${process.env.NEXT_PUBLIC_API_ENDPOINT}/api/teacher/login`,
           {
             name: userName,
             pass: pass,
@@ -57,8 +56,7 @@ const page = (props: Props) => {
           <div className=" flex items-center h-12 w-full border-black border boxShadow">
             <div
               className="flex justify-center items-center 
-           text-black w-14 h-full "
-            >
+           text-black w-14 h-full ">
               <FaUserCircle className=" text-priClr text-2xl" />
             </div>
             <input
@@ -72,8 +70,7 @@ const page = (props: Props) => {
           <div className=" flex items-center h-12 w-full boxShadow border-black border">
             <div
               className="flex justify-center items-center 
-           text-black w-14 h-full "
-            >
+           text-black w-14 h-full ">
               <RiLockPasswordFill className=" text-priClr text-2xl" />
             </div>
             <input

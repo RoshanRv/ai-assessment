@@ -8,10 +8,11 @@ import { geminiFeedback } from "@/utils/chat/geminiFeedbackAPI";
 import axios from "axios";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { BiChevronLeft } from "react-icons/bi";
 import { FaGear } from "react-icons/fa6";
+import { v4 } from "uuid";
 
 const trueOrFalse = {
   internal: [
@@ -78,7 +79,9 @@ const Quizz = ({ page }: { page: string }) => {
     setShowQuiz,
     showQuiz,
   } = useQuizz();
+  const params = useParams();
   const role = useUser((state) => state.role);
+  const staffName = useUser((state) => state.user?.userName);
 
   const route = useRouter();
   const [history, setHistory] = useState<{
@@ -89,26 +92,19 @@ const Quizz = ({ page }: { page: string }) => {
   const [isParsed, setIsParsed] = useState(true);
   const [currQnIndex, setCurrQnIndex] = useState(0);
   const [ansWithQns, setAnsWithQns] = useState<QuestionWithAnsType[]>([]);
-  const [questions, setQuestions] = useState<QuestionType[]>([
-    {
-      question: "2 + 2 ",
-      options: ["3", "4", "5", "6"],
-      answer: "4",
-    },
-    {
-      question: "3 + 3 ",
-      options: ["3", "4", "5", "6"],
-      answer: "6",
-    },
-  ]);
+  const [questions, setQuestions] = useState<QuestionType[]>([]);
   const [isEdit, setIsEdit] = useState(false);
   const [loading, setLoading] = useState(false);
   const [ans, setAns] = useState("");
   const [isSubmit, setIsSubmit] = useState(false);
+  const [uploadStatus, setUploadStatus] = useState(false);
 
   const [feedback, setFeedback] = useState<null | {
     areas_to_improve: string[];
     guidance: string[];
+    strengths: string[];
+    weaknesses: string[];
+    encouragement: string;
   }>(null);
 
   const [percentage, setPercentage] = useState(0);
@@ -120,7 +116,31 @@ const Quizz = ({ page }: { page: string }) => {
     percentage >= 60 ? setIsPass(true) : setIsPass(false);
   };
 
+  const getStaffAssess = async (id: string) => {
+    try {
+      const { data } = await axios.post(
+        `${process.env.NEXT_PUBLIC_API_ENDPOINT}/api/teacher/getdatabyid`,
+        {
+          id: id,
+        }
+      );
+      if (data) {
+        setQuestions(JSON.parse(data.questions));
+      }
+    } catch (e) {
+      setToast({ msg: "error", variant: "error" });
+    }
+  };
+
   useEffect(() => {
+    if (params.id != "none") {
+      console.log("not none");
+
+      setIsStart(true);
+      getStaffAssess(params.id as string);
+    }
+    console.log("exit");
+
     return () => reset();
   }, []);
 
@@ -131,9 +151,14 @@ const Quizz = ({ page }: { page: string }) => {
     setQuesNo(0);
     setScore(0);
     setFeedback(null);
+    setAnsWithQns([]);
   };
 
+  console.log(feedback);
+
   useEffect(() => {
+    console.log(role);
+
     if (role == "staff") {
       setIsEdit(true);
     } else {
@@ -180,6 +205,8 @@ const Quizz = ({ page }: { page: string }) => {
       ]);
   };
 
+  console.log(feedback);
+
   const handleBegin = async () => {
     setIsStart(true);
     setLoading(true);
@@ -209,20 +236,40 @@ const Quizz = ({ page }: { page: string }) => {
       } else {
         setIsParsed(false);
         setIsStart(false);
-        setToast({ msg: "Parse Failed", variant: "error" });
+        setToast({ msg: "Parse Failed, Please Try Again", variant: "error" });
       }
     } catch (e) {
       console.log(e);
       setIsStart(false);
       setIsParsed(false);
-      setToast({ msg: "Parse Failed", variant: "error" });
+      setToast({ msg: "Parse Failed, Please Try Again", variant: "error" });
     } finally {
       setLoading(false);
     }
   };
 
   const storeChanges = async () => {
-    setIsStart(false);
+    try {
+      setIsStart(false);
+      setUploadStatus(true);
+      const { data } = await axios.post(
+        `${process.env.NEXT_PUBLIC_API_ENDPOINT}/api/teacher/questions`,
+        {
+          data: {
+            topic: ques,
+            staffName: staffName,
+            difficulty: selectedLevel,
+            questions: JSON.stringify(questions),
+          },
+        }
+      );
+      setUploadStatus(false);
+      setToast({ msg: "Created", variant: "success" });
+      route.replace("/dashboard");
+    } catch (e) {
+      setToast({ msg: "error", variant: "error" });
+    }
+
     // setIsEnd(true);
   };
 
@@ -230,22 +277,18 @@ const Quizz = ({ page }: { page: string }) => {
     try {
       setLoading(true);
       console.log("feedback");
-      const feedback = await geminiFeedback(score, ques);
-      setFeedback(feedback);
+      const feedback = await geminiFeedback(
+        score,
+        ques,
+        JSON.stringify(ansWithQns)
+      );
+      if ("length" in feedback) {
+        setFeedback(feedback[0]);
+      } else {
+        setFeedback(feedback);
+      }
       setIsEnd(true);
       return;
-
-      const { data } = await axios.post(`http://localhost:5000/api/v1/chat`, {
-        user_input: `can you provide me a feedback on how can I improve, as I scored ${score} out of ${quesNo} in test about ${ques}?`,
-      });
-      setFeedback(
-        data.results[0].history.visible[
-          data.results[0].history.visible.length - 1
-        ][1]
-          .split("Of course!")[1]
-          .replace(/\\n/g, "\n")
-          .replace(/&#x27;/g, "'")
-      );
     } catch (e) {
       console.log(e);
     } finally {
@@ -284,7 +327,7 @@ const Quizz = ({ page }: { page: string }) => {
       {/* Chooooses */}
       {!isStart && (
         <div
-          className={`flex flex-col w-4/12 bg-white py-6 gap-6 px-10 boxShadow border-[3px] border-priClr mx-auto justify-around h-full ${
+          className={`flex flex-col w-4/12 bg-white px-10 py-8  gap-6 boxShadow border-[3px] border-priClr mx-auto justify-around h-full ${
             isStart ? "opacity-0" : "opacity-100"
           } transition-all `}
         >
@@ -398,50 +441,31 @@ const Quizz = ({ page }: { page: string }) => {
           } transition-all flex flex-col justify-around h-full z-10 `}
         >
           {/* Ques/ Opt... */}
-          {!loading ? (
+          {!loading && questions.length ? (
             <div className="w-1/2 mx-auto flex flex-col gap-8">
               {/* Ques */}
-              {isEdit ? (
-                <textarea
-                  rows={0}
-                  value={questions[currQnIndex]?.question}
-                  className="bg-priClr boxShadow w-full text-wrap whitespace-break-spaces overflow-y-auto p-4 text-white border-2  border-black   font-bold text-2xl resize-none  "
-                  onChange={(e) => {
-                    setQuestions((prev) => {
-                      const newQn = [...prev];
-                      newQn[currQnIndex].question = e.target.value;
-                      return newQn;
-                    });
-                  }}
-                />
-              ) : (
-                <p className="bg-priClr boxShadow w-full text-wrap whitespace-break-spaces overflow-y-auto p-4 text-white border-2  border-black   font-bold text-2xl">
-                  {questions[currQnIndex]?.question}
-                </p>
-              )}
-
+              <input
+                disabled={!isEdit}
+                onChange={(e) => {
+                  setQuestions((prev) => {
+                    const newQn = [...prev];
+                    newQn[currQnIndex].question = e.target.value;
+                    return newQn;
+                  });
+                }}
+                value={questions[currQnIndex]?.question}
+                className={`${
+                  isEdit ? "!cursor-text" : ""
+                } bg-priClr boxShadow w-full text-wrap whitespace-break-spaces  p-4 text-white border-2  border-black   font-bold text-2xl `}
+              >
+                {/* {`${questions[currQnIndex]?.question} ?`} */}
+              </input>
               {/* Opts */}
               <div className="grid grid-cols-2 gap-4">
                 {questions[currQnIndex].options?.map((opt, i) =>
                   opt ? (
                     isEdit ? (
                       <div key={i} className="flex gap-3 items-center">
-                        {/* <div
-                          onClick={() => {
-                            setQuestions((prev) => {
-                              const newQn = [...prev];
-                              newQn[currQnIndex].answer = opt;
-                              return newQn;
-                            });
-                          }}
-                          className={`${
-                            questions[currQnIndex].answer === opt
-                              ? "bg-green-600 "
-                              : "cursor-pointer "
-                          } my-auto w-7 h-7 rounded-md text-white text-center font-bold`}
-                        >
-                          ✔️
-                        </div> */}
                         <input
                           type="checkbox"
                           onClick={() => {
@@ -452,7 +476,7 @@ const Quizz = ({ page }: { page: string }) => {
                             });
                           }}
                           checked={questions[currQnIndex].answer === opt}
-                          className="accent-emerald-600 w-8 h-8 "
+                          className="w-8 h-8 accent-emerald-600 "
                         />
                         <input
                           disabled={!isEdit}
@@ -493,13 +517,13 @@ const Quizz = ({ page }: { page: string }) => {
               </div>
             </div>
           ) : (
-            <div className="bg-white p-3 px-10 border-2 border-priClr boxShadow font-semibold w-max mx-auto ">
+            <div className="bg-white p-3 mt-4 px-10 border-2 border-priClr boxShadow font-semibold w-max mx-auto ">
               <FaGear className="animate-spin text-3xl w-max mx-auto " />
               <h1 className="text-xl my-3">Generating...</h1>
             </div>
           )}
           {isSubmit && (
-            <div className="p-3 shadow-md mt-5 bg-white boxShadow w-max mx-auto">
+            <div className="p-3 shadow-md bg-white boxShadow w-max mx-auto">
               {/* Result Gif */}
               <div className="w-40 h-40 relative mx-auto">
                 <Image
@@ -528,7 +552,7 @@ const Quizz = ({ page }: { page: string }) => {
           )}
           {!loading &&
             (!isEdit ? (
-              <div className="flex gap-4 mt-5 items-center w-1/2 mx-auto ">
+              <div className="flex gap-4 mt-4 items-center w-1/2 mx-auto ">
                 <button
                   onClick={() => {
                     setIsSubmit(true);
@@ -584,7 +608,7 @@ const Quizz = ({ page }: { page: string }) => {
                 )}
               </div>
             ) : (
-              <div className="flex gap-4 mt-5 items-center w-1/2 mx-auto ">
+              <div className="flex gap-4 items-center mt-4 w-1/2 mx-auto ">
                 <button
                   onClick={() => {
                     console.log("validate");
@@ -599,6 +623,7 @@ const Quizz = ({ page }: { page: string }) => {
                 >
                   Validate & Next Question
                 </button>
+
                 <button
                   onClick={storeChanges}
                   className="px-20 py-3 z-10 bg-priClr text-white border-2 border-black boxShadow boxShadow  font-bold w-max mx-auto "
@@ -607,6 +632,10 @@ const Quizz = ({ page }: { page: string }) => {
                 </button>
               </div>
             ))}
+          {/* Warning */}
+          {params.id === "none" && (
+            <p className="text-yellow-500 mx-auto max-w-[40%] text-center boxShadow px-5 py-1 mt-6 border-2 border-yellow-500 bg-white font-semibold">{`Caution: AI-generated questions may be inaccurate or misleading. Users can take validated assessments reviewed by staff to prevent such misleadings.`}</p>
+          )}
         </div>
       )}
 
@@ -649,15 +678,45 @@ const Quizz = ({ page }: { page: string }) => {
               <h1 className="text-lg font-semibold">Areas to Improve</h1>
               <ul>
                 {feedback["areas_to_improve"]?.map((point) => {
-                  return <li className="list-item list-disc ml-10">{point}</li>;
+                  return (
+                    <li key={v4()} className="list-item list-disc ml-10">
+                      {point}
+                    </li>
+                  );
                 })}
               </ul>
               <h1 className="font-semibold text-lg">Guidance</h1>
               <ul>
                 {feedback["guidance"]?.map((point) => {
-                  return <li className="list-item list-disc ml-10">{point}</li>;
+                  return (
+                    <li key={v4()} className="list-item list-disc ml-10">
+                      {point}
+                    </li>
+                  );
                 })}
               </ul>
+              <h1 className="font-semibold text-lg">Strengths</h1>
+              <ul>
+                {feedback["strengths"]?.map((point) => {
+                  return (
+                    <li key={v4()} className="list-item list-disc ml-10">
+                      {point}
+                    </li>
+                  );
+                })}
+              </ul>
+              <h1 className="font-semibold text-lg">Weakness</h1>
+              <ul>
+                {feedback["weaknesses"]?.map((point) => {
+                  return (
+                    <li key={v4()} className="list-item list-disc ml-10">
+                      {point}
+                    </li>
+                  );
+                })}
+              </ul>
+              <h1 className="font-semibold text-lg">Encouragement</h1>
+              <ul>{<li className=" ml-10">{feedback["encouragement"]}</li>}</ul>
             </div>
           )}
           {/* Loading */}
@@ -667,6 +726,12 @@ const Quizz = ({ page }: { page: string }) => {
               <h1 className="text-xl my-3">Getting Feedback...</h1>
             </div>
           )}
+          {uploadStatus && (
+            <div className="bg-white p-3 px-10 border-2 border-priClr boxShadow font-semibold w-max mx-auto ">
+              {/* <FaGear className="animate-spin text-3xl w-max mx-auto " /> */}
+              <h1 className="text-xl my-3">Uploading...</h1>
+            </div>
+          )}
 
           {/* Btns */}
           <div className="flex gap-6 mx-auto items-center">
@@ -674,8 +739,7 @@ const Quizz = ({ page }: { page: string }) => {
               onClick={() => {
                 handleFeedback();
               }}
-              className="px-20 py-3 z-10 bg-priClr text-white border-2 border-black boxShadow   font-bold w-max mx-auto "
-            >
+              className="px-20 py-3 z-10 bg-priClr text-white border-2 border-black boxShadow   font-bold w-max mx-auto ">
               {`Get Feedback`}
             </button> */}
             {page == "chat" ? (
