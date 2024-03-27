@@ -89,7 +89,8 @@ const Quizz = ({ page }: { page: string }) => {
   const setToast = useToast((state) => state.setToast);
   const [isParsed, setIsParsed] = useState(true);
   const [currQnIndex, setCurrQnIndex] = useState(0);
-  const [questions, setQuestions] = useState([
+  const [ansWithQns, setAnsWithQns] = useState<QuestionWithAnsType[]>([]);
+  const [questions, setQuestions] = useState<QuestionType[]>([
     {
       question: "2 + 2 ",
       options: ["3", "4", "5", "6"],
@@ -110,16 +111,23 @@ const Quizz = ({ page }: { page: string }) => {
   const [feedback, setFeedback] = useState<null | {
     areas_to_improve: string[];
     guidance: string[];
+    strengths: string[];
+    weaknesses: string[];
+    encouragement: string;
   }>(null);
 
   const [percentage, setPercentage] = useState(0);
   const [isPass, setIsPass] = useState(false);
 
   const calculatePercentage = () => {
-    const percentage = Math.ceil((score / quesNo) * 100);
+    const percentage = Math.ceil((score / (currQnIndex + 1)) * 100);
     setPercentage(percentage);
     percentage >= 60 ? setIsPass(true) : setIsPass(false);
   };
+
+  useEffect(() => {
+    return () => reset();
+  }, []);
 
   const reset = () => {
     setShowQuiz(false);
@@ -128,7 +136,10 @@ const Quizz = ({ page }: { page: string }) => {
     setQuesNo(0);
     setScore(0);
     setFeedback(null);
+    setAnsWithQns([]);
   };
+
+  console.log(feedback);
 
   useEffect(() => {
     console.log(role);
@@ -179,6 +190,8 @@ const Quizz = ({ page }: { page: string }) => {
       ]);
   };
 
+  console.log(feedback);
+
   const handleBegin = async () => {
     setIsStart(true);
     setLoading(true);
@@ -208,13 +221,13 @@ const Quizz = ({ page }: { page: string }) => {
       } else {
         setIsParsed(false);
         setIsStart(false);
-        setToast({ msg: "Parse Failed", variant: "error" });
+        setToast({ msg: "Parse Failed, Please Try Again", variant: "error" });
       }
     } catch (e) {
       console.log(e);
       setIsStart(false);
       setIsParsed(false);
-      setToast({ msg: "Parse Failed", variant: "error" });
+      setToast({ msg: "Parse Failed, Please Try Again", variant: "error" });
     } finally {
       setLoading(false);
     }
@@ -247,30 +260,26 @@ const Quizz = ({ page }: { page: string }) => {
 
   const handleFeedback = async () => {
     try {
+      // setLoading(true);
       console.log("feedback");
-      const feedback = await geminiFeedback(score, ques);
+      const feedback = await geminiFeedback(
+        score,
+        ques,
+        JSON.stringify(ansWithQns)
+      );
       setFeedback(feedback);
       setIsEnd(true);
       return;
-
-      setLoading(true);
-      const { data } = await axios.post(`http://localhost:5000/api/v1/chat`, {
-        user_input: `can you provide me a feedback on how can I improve, as I scored ${score} out of ${quesNo} in test about ${ques}?`,
-      });
-      setFeedback(
-        data.results[0].history.visible[
-          data.results[0].history.visible.length - 1
-        ][1]
-          .split("Of course!")[1]
-          .replace(/\\n/g, "\n")
-          .replace(/&#x27;/g, "'")
-      );
     } catch (e) {
       console.log(e);
     } finally {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    console.log(ansWithQns);
+  }, [ansWithQns]);
 
   useEffect(() => {
     selectedType === "mcq"
@@ -525,6 +534,14 @@ const Quizz = ({ page }: { page: string }) => {
                         ? score + 1
                         : score
                     );
+                    setAnsWithQns((prev) => [
+                      ...prev,
+                      {
+                        question: questions[currQnIndex].question,
+                        answer: ans.trim(),
+                        correct: questions[currQnIndex].answer.trim(),
+                      },
+                    ]);
                   }}
                   className="px-20 py-3 z-10 bg-priClr boxShadow text-white border-2 border-black  font-bold w-max mx-auto ">
                   Submit Answer
@@ -610,7 +627,9 @@ const Quizz = ({ page }: { page: string }) => {
             <div className="grid grid-cols-2 gap-6 w-full">
               {/* Score */}
               <div className=" px-10  z-10 items-center p-6 flex flex-col gap-6 bg-priClr border-2 border-black text-white boxShadow justify-center ">
-                <p className="text-5xl font-semibold ">{`${score} / ${quesNo}`}</p>
+                <p className="text-5xl font-semibold ">{`${score} / ${
+                  currQnIndex + 1
+                }`}</p>
               </div>
               {/* Percentage */}
               <div
@@ -627,6 +646,7 @@ const Quizz = ({ page }: { page: string }) => {
                 : `Sorry, You Don't Have Enough Percentage. Learn More & Try Again 💪🏻`}
             </h1>
           </div>
+
           {/* Feedback */}
           {feedback && !loading && (
             <div className="w-full p-6 border-2 border-priClr boxShadow mx-auto bg-white z-10 flex flex-col gap-3 ">
@@ -634,15 +654,45 @@ const Quizz = ({ page }: { page: string }) => {
               <h1 className="text-lg font-semibold">Areas to Improve</h1>
               <ul>
                 {feedback["areas_to_improve"]?.map((point) => {
-                  return <li className="list-item list-disc ml-10">{point}</li>;
+                  return (
+                    <li key={point} className="list-item list-disc ml-10">
+                      {point}
+                    </li>
+                  );
                 })}
               </ul>
               <h1 className="font-semibold text-lg">Guidance</h1>
               <ul>
                 {feedback["guidance"]?.map((point) => {
-                  return <li className="list-item list-disc ml-10">{point}</li>;
+                  return (
+                    <li key={point} className="list-item list-disc ml-10">
+                      {point}
+                    </li>
+                  );
                 })}
               </ul>
+              <h1 className="font-semibold text-lg">Strengths</h1>
+              <ul>
+                {feedback["strengths"]?.map((point) => {
+                  return (
+                    <li key={point} className="list-item list-disc ml-10">
+                      {point}
+                    </li>
+                  );
+                })}
+              </ul>
+              <h1 className="font-semibold text-lg">Weakness</h1>
+              <ul>
+                {feedback["weaknesses"]?.map((point) => {
+                  return (
+                    <li key={point} className="list-item list-disc ml-10">
+                      {point}
+                    </li>
+                  );
+                })}
+              </ul>
+              <h1 className="font-semibold text-lg">Encouragement</h1>
+              <ul>{<li className=" ml-10">{feedback["encouragement"]}</li>}</ul>
             </div>
           )}
           {/* Loading */}
@@ -661,13 +711,13 @@ const Quizz = ({ page }: { page: string }) => {
 
           {/* Btns */}
           <div className="flex gap-6 mx-auto items-center">
-            <button
+            {/* <button
               onClick={() => {
                 handleFeedback();
               }}
               className="px-20 py-3 z-10 bg-priClr text-white border-2 border-black boxShadow   font-bold w-max mx-auto ">
               {`Get Feedback`}
-            </button>
+            </button> */}
             {page == "chat" ? (
               <button
                 onClick={() => reset()}
