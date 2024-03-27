@@ -1,12 +1,23 @@
+import axios from "axios";
 import Image from "next/image";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { BiPlus } from "react-icons/bi";
-
 type Props = {};
 
 const StaffDashboard = (props: Props) => {
   const [assessments, setAssessments] = useState<AssessmentType[]>([]);
+  const getAssessments = async () => {
+    const { data } = await axios.get(
+      `${process.env.NEXT_PUBLIC_API_ENDPOINT}/api/teacher/questions`
+    );
+    console.log(data);
+
+    setAssessments(data.val);
+  };
+  useEffect(() => {
+    getAssessments();
+  }, []);
 
   return (
     <section className="p-6 px-10 min-h-[calc(100vh-4rem)] flex flex-col gap-6 bg">
@@ -15,7 +26,7 @@ const StaffDashboard = (props: Props) => {
         <div className="flex items-center justify-between">
           <h4 className="text-2xl font-medium px-4 py-2 bg-white boxShadow w-max border-[3px] border-priClr ">{`Your Validated Assessments`}</h4>
           <Link
-            href={"/assessment"}
+            href={"/assessment/none"}
             className="bg-priClr  text-white capitalize border-[3px] border-black boxShadow flex items-center gap-2 px-7 py-2 rounde-md shadow-black shadow-sm font-semibold">
             <BiPlus className="text-[23px] text-white" />
             <p className="font-semibold text-lg">Create Assessements</p>

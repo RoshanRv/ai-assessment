@@ -27,3 +27,23 @@ export async function POST(req: NextRequest) {
     );
   }
 }
+
+export async function GET(req: NextRequest) {
+  try {
+    await connectMongoDB();
+    const val = await teacherLogin.find();
+
+    if (val) {
+      return NextResponse.json({ val }, { status: 200 });
+    }
+  } catch (e) {
+    return NextResponse.json(
+      {
+        message: "error",
+      },
+      {
+        status: 400,
+      }
+    );
+  }
+}

@@ -8,7 +8,7 @@ import { geminiFeedback } from "@/utils/chat/geminiFeedbackAPI";
 import axios from "axios";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { BiChevronLeft } from "react-icons/bi";
 import { FaGear } from "react-icons/fa6";
@@ -78,6 +78,7 @@ const Quizz = ({ page }: { page: string }) => {
     setShowQuiz,
     showQuiz,
   } = useQuizz();
+  const params = useParams();
   const role = useUser((state) => state.role);
   const staffName = useUser((state) => state.user?.userName);
 
@@ -90,18 +91,7 @@ const Quizz = ({ page }: { page: string }) => {
   const [isParsed, setIsParsed] = useState(true);
   const [currQnIndex, setCurrQnIndex] = useState(0);
   const [ansWithQns, setAnsWithQns] = useState<QuestionWithAnsType[]>([]);
-  const [questions, setQuestions] = useState<QuestionType[]>([
-    {
-      question: "2 + 2 ",
-      options: ["3", "4", "5", "6"],
-      answer: "4",
-    },
-    {
-      question: "3 + 3 ",
-      options: ["3", "4", "5", "6"],
-      answer: "6",
-    },
-  ]);
+  const [questions, setQuestions] = useState<QuestionType[]>([]);
   const [isEdit, setIsEdit] = useState(false);
   const [loading, setLoading] = useState(false);
   const [ans, setAns] = useState("");
@@ -125,7 +115,31 @@ const Quizz = ({ page }: { page: string }) => {
     percentage >= 60 ? setIsPass(true) : setIsPass(false);
   };
 
+  const getStaffAssess = async (id: string) => {
+    try {
+      const { data } = await axios.post(
+        `${process.env.NEXT_PUBLIC_API_ENDPOINT}/api/teacher/getdatabyid`,
+        {
+          id: id,
+        }
+      );
+      if (data) {
+        setQuestions(JSON.parse(data.questions));
+      }
+    } catch (e) {
+      setToast({ msg: "error", variant: "error" });
+    }
+  };
+
   useEffect(() => {
+    if (params.id != "none") {
+      console.log("not none");
+
+      setIsStart(true);
+      getStaffAssess(params.id as string);
+    }
+    console.log("exit");
+
     return () => reset();
   }, []);
 
@@ -414,7 +428,7 @@ const Quizz = ({ page }: { page: string }) => {
             isStart ? "opacity-100" : "opacity-0"
           } transition-all flex flex-col justify-around h-full z-10 `}>
           {/* Ques/ Opt... */}
-          {!loading ? (
+          {!loading && questions.length ? (
             <div className="w-1/2 mx-auto flex flex-col gap-8">
               {/* Ques */}
               <input
