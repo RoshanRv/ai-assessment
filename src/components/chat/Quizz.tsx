@@ -114,10 +114,14 @@ const Quizz = ({ page }: { page: string }) => {
   const [isPass, setIsPass] = useState(false);
 
   const calculatePercentage = () => {
-    const percentage = Math.ceil((score / currQnIndex) * 100);
+    const percentage = Math.ceil((score / (currQnIndex + 1)) * 100);
     setPercentage(percentage);
     percentage >= 60 ? setIsPass(true) : setIsPass(false);
   };
+
+  useEffect(() => {
+    return () => reset();
+  }, []);
 
   const reset = () => {
     setShowQuiz(false);
@@ -223,13 +227,13 @@ const Quizz = ({ page }: { page: string }) => {
 
   const handleFeedback = async () => {
     try {
+      setLoading(true);
       console.log("feedback");
       const feedback = await geminiFeedback(score, ques);
       setFeedback(feedback);
       setIsEnd(true);
       return;
 
-      setLoading(true);
       const { data } = await axios.post(`http://localhost:5000/api/v1/chat`, {
         user_input: `can you provide me a feedback on how can I improve, as I scored ${score} out of ${quesNo} in test about ${ques}?`,
       });
@@ -604,7 +608,9 @@ const Quizz = ({ page }: { page: string }) => {
             <div className="grid grid-cols-2 gap-6 w-full">
               {/* Score */}
               <div className=" px-10  z-10 items-center p-6 flex flex-col gap-6 bg-priClr border-2 border-black text-white boxShadow justify-center ">
-                <p className="text-5xl font-semibold ">{`${score} / ${currQnIndex}`}</p>
+                <p className="text-5xl font-semibold ">{`${score} / ${
+                  currQnIndex + 1
+                }`}</p>
               </div>
               {/* Percentage */}
               <div
@@ -622,6 +628,7 @@ const Quizz = ({ page }: { page: string }) => {
                 : `Sorry, You Don't Have Enough Percentage. Learn More & Try Again 💪🏻`}
             </h1>
           </div>
+
           {/* Feedback */}
           {feedback && !loading && (
             <div className="w-full p-6 border-2 border-priClr boxShadow mx-auto bg-white z-10 flex flex-col gap-3 ">
@@ -650,14 +657,14 @@ const Quizz = ({ page }: { page: string }) => {
 
           {/* Btns */}
           <div className="flex gap-6 mx-auto items-center">
-            <button
+            {/* <button
               onClick={() => {
                 handleFeedback();
               }}
               className="px-20 py-3 z-10 bg-priClr text-white border-2 border-black boxShadow   font-bold w-max mx-auto "
             >
               {`Get Feedback`}
-            </button>
+            </button> */}
             {page == "chat" ? (
               <button
                 onClick={() => reset()}
