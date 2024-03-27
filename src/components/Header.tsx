@@ -7,12 +7,17 @@ import { useRouter } from "next/navigation";
 type Props = {};
 
 const Header = (props: Props) => {
-  const router = useRouter();
-  const logout = () => {
-    localStorage.removeItem("ai-assessment");
-    router.replace("/");
-  };
+  const route = useRouter();
   const user = useUser((state) => state.user);
+  const setUser = useUser((state) => state.setUser);
+  const setRole = useUser((state) => state.setRole);
+
+  const logout = () => {
+    setUser(null);
+    setRole(null);
+    localStorage.removeItem("ai-assessment");
+    route.push("/");
+  };
   return (
     <nav className="px-4 py-4 border-b  bg-white h-[4rem] flex items-center justify-between">
       <Link href={"/"}>

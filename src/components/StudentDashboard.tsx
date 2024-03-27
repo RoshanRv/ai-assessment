@@ -1,13 +1,26 @@
+"use client";
 import Image from "next/image";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import AIGEN from "@/assets/ai_gen.png";
 import Link from "next/link";
+import axios from "axios";
 
 type Props = {};
 
 const StudentDashboard = (props: Props) => {
   const [assessments, setAssessments] = useState<AssessmentType[]>([]);
 
+  const getAssessments = async () => {
+    const { data } = await axios.get(
+      `${process.env.NEXT_PUBLIC_API_ENDPOINT}/api/teacher/questions`
+    );
+    console.log(data);
+
+    setAssessments(data.val);
+  };
+  useEffect(() => {
+    getAssessments();
+  }, []);
   return (
     <section className="p-6 px-10 min-h-[calc(100vh-4rem)] flex flex-col gap-6 bg">
       {/* Validated Assessments */}
@@ -29,7 +42,10 @@ const StudentDashboard = (props: Props) => {
         ) : (
           <div className="grid grid-cols-3 gap-6 items-center ">
             {assessments.map((assess) => (
-              <div className="p-3 flex flex-col gap-2 boxShadow border-[3px] bg-white hover:bg-black/5 transition-all z-10 border-priClr">
+              <Link
+                href={`/assessment/${assess._id}`}
+                // onClick={goToAssessment(assess._id)}
+                className="p-3 flex flex-col gap-2 boxShadow border-[3px] bg-white hover:bg-black/5 transition-all z-10 border-priClr">
                 <div className="flex gap-4 items-center ">
                   <h1 className="text-2xl font-semibold ">{assess?.topic}</h1>
                   {/* DIFFICULTY */}
@@ -41,7 +57,7 @@ const StudentDashboard = (props: Props) => {
                   <p>{assess?.staffName}</p>
                   <p>{assess?.createdAt}</p>
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
         )}
@@ -54,9 +70,8 @@ const StudentDashboard = (props: Props) => {
             <Image alt="" src={AIGEN} />
           </div>
           <Link
-            href={"/assessment"}
-            className="bg-priClr  text-white capitalize border-[3px] border-black boxShadow flex items-center gap-2 px-7 py-3 rounde-md shadow-black shadow-sm font-semibold"
-          >
+            href={"/assessment/none"}
+            className="bg-priClr  text-white capitalize border-[3px] border-black boxShadow flex items-center gap-2 px-7 py-3 rounde-md shadow-black shadow-sm font-semibold">
             <p className="font-bold">Take AI Generated Assessments</p>
           </Link>
         </div>

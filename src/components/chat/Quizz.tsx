@@ -8,7 +8,7 @@ import { geminiFeedback } from "@/utils/chat/geminiFeedbackAPI";
 import axios from "axios";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { BiChevronLeft } from "react-icons/bi";
 import { FaGear } from "react-icons/fa6";
@@ -78,6 +78,7 @@ const Quizz = ({ page }: { page: string }) => {
     setShowQuiz,
     showQuiz,
   } = useQuizz();
+  const params = useParams();
   const role = useUser((state) => state.role);
   const staffName = useUser((state) => state.user?.userName);
 
@@ -89,18 +90,8 @@ const Quizz = ({ page }: { page: string }) => {
   const setToast = useToast((state) => state.setToast);
   const [isParsed, setIsParsed] = useState(true);
   const [currQnIndex, setCurrQnIndex] = useState(0);
-  const [questions, setQuestions] = useState([
-    {
-      question: "2 + 2 ",
-      options: ["3", "4", "5", "6"],
-      answer: "4",
-    },
-    {
-      question: "3 + 3 ",
-      options: ["3", "4", "5", "6"],
-      answer: "6",
-    },
-  ]);
+  const [ansWithQns, setAnsWithQns] = useState<QuestionWithAnsType[]>([]);
+  const [questions, setQuestions] = useState<QuestionType[]>([]);
   const [isEdit, setIsEdit] = useState(false);
   const [loading, setLoading] = useState(false);
   const [ans, setAns] = useState("");
@@ -116,10 +107,38 @@ const Quizz = ({ page }: { page: string }) => {
   const [isPass, setIsPass] = useState(false);
 
   const calculatePercentage = () => {
-    const percentage = Math.ceil((score / quesNo) * 100);
+    const percentage = Math.ceil((score / (currQnIndex + 1)) * 100);
     setPercentage(percentage);
     percentage >= 60 ? setIsPass(true) : setIsPass(false);
   };
+
+  const getStaffAssess = async (id: string) => {
+    try {
+      const { data } = await axios.post(
+        `${process.env.NEXT_PUBLIC_API_ENDPOINT}/api/teacher/getdatabyid`,
+        {
+          id: id,
+        }
+      );
+      if (data) {
+        setQuestions(JSON.parse(data.questions));
+      }
+    } catch (e) {
+      setToast({ msg: "error", variant: "error" });
+    }
+  };
+
+  useEffect(() => {
+    if (params.id != "none") {
+      console.log("not none");
+
+      setIsStart(true);
+      getStaffAssess(params.id as string);
+    }
+    console.log("exit");
+
+    return () => reset();
+  }, []);
 
   const reset = () => {
     setShowQuiz(false);
@@ -247,13 +266,13 @@ const Quizz = ({ page }: { page: string }) => {
 
   const handleFeedback = async () => {
     try {
+      setLoading(true);
       console.log("feedback");
       const feedback = await geminiFeedback(score, ques);
       setFeedback(feedback);
       setIsEnd(true);
       return;
 
-      setLoading(true);
       const { data } = await axios.post(`http://localhost:5000/api/v1/chat`, {
         user_input: `can you provide me a feedback on how can I improve, as I scored ${score} out of ${quesNo} in test about ${ques}?`,
       });
@@ -271,6 +290,10 @@ const Quizz = ({ page }: { page: string }) => {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    console.log(ansWithQns);
+  }, [ansWithQns]);
 
   useEffect(() => {
     selectedType === "mcq"
@@ -405,7 +428,7 @@ const Quizz = ({ page }: { page: string }) => {
             isStart ? "opacity-100" : "opacity-0"
           } transition-all flex flex-col justify-around h-full z-10 `}>
           {/* Ques/ Opt... */}
-          {!loading ? (
+          {!loading && questions.length ? (
             <div className="w-1/2 mx-auto flex flex-col gap-8">
               {/* Ques */}
               <input
@@ -525,6 +548,14 @@ const Quizz = ({ page }: { page: string }) => {
                         ? score + 1
                         : score
                     );
+                    setAnsWithQns((prev) => [
+                      ...prev,
+                      {
+                        question: questions[currQnIndex].question,
+                        answer: ans.trim(),
+                        correct: questions[currQnIndex].answer.trim(),
+                      },
+                    ]);
                   }}
                   className="px-20 py-3 z-10 bg-priClr boxShadow text-white border-2 border-black  font-bold w-max mx-auto ">
                   Submit Answer
@@ -610,7 +641,9 @@ const Quizz = ({ page }: { page: string }) => {
             <div className="grid grid-cols-2 gap-6 w-full">
               {/* Score */}
               <div className=" px-10  z-10 items-center p-6 flex flex-col gap-6 bg-priClr border-2 border-black text-white boxShadow justify-center ">
-                <p className="text-5xl font-semibold ">{`${score} / ${quesNo}`}</p>
+                <p className="text-5xl font-semibold ">{`${score} / ${
+                  currQnIndex + 1
+                }`}</p>
               </div>
               {/* Percentage */}
               <div
@@ -627,6 +660,7 @@ const Quizz = ({ page }: { page: string }) => {
                 : `Sorry, You Don't Have Enough Percentage. Learn More & Try Again 💪🏻`}
             </h1>
           </div>
+
           {/* Feedback */}
           {feedback && !loading && (
             <div className="w-full p-6 border-2 border-priClr boxShadow mx-auto bg-white z-10 flex flex-col gap-3 ">
@@ -661,13 +695,13 @@ const Quizz = ({ page }: { page: string }) => {
 
           {/* Btns */}
           <div className="flex gap-6 mx-auto items-center">
-            <button
+            {/* <button
               onClick={() => {
                 handleFeedback();
               }}
               className="px-20 py-3 z-10 bg-priClr text-white border-2 border-black boxShadow   font-bold w-max mx-auto ">
               {`Get Feedback`}
-            </button>
+            </button> */}
             {page == "chat" ? (
               <button
                 onClick={() => reset()}
