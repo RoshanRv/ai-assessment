@@ -78,7 +78,6 @@ const Quizz = ({ page }: { page: string }) => {
     setShowQuiz,
     showQuiz,
   } = useQuizz();
-
   const role = useUser((state) => state.role);
 
   const route = useRouter();
@@ -125,6 +124,14 @@ const Quizz = ({ page }: { page: string }) => {
     setScore(0);
     setFeedback("");
   };
+
+  useEffect(() => {
+    if (role == "staff") {
+      setIsEdit(false);
+    } else {
+      setIsEdit(true);
+    }
+  }, [isStart]);
 
   const handleParseQuestion = (ques: string) => {
     selectedType == "tf" &&
@@ -204,6 +211,11 @@ const Quizz = ({ page }: { page: string }) => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const storeChanges = async () => {
+    setIsStart(false);
+    // setIsEnd(true);
   };
 
   const handleFeedback = async () => {
@@ -527,8 +539,6 @@ const Quizz = ({ page }: { page: string }) => {
                   onClick={() => {
                     console.log("validate");
 
-                    if (questions.length <= currQnIndex + 1)
-                      return handleFeedback();
                     setLoading(false);
                     setIsSubmit(false);
                     setAns("");
@@ -542,8 +552,7 @@ const Quizz = ({ page }: { page: string }) => {
                   onClick={() => {
                     console.log("submit");
 
-                    if (questions.length <= currQnIndex + 1)
-                      return handleFeedback();
+                    if (questions.length <= currQnIndex + 1) return;
                     setLoading(false);
                     setIsSubmit(false);
                     setAns("");
@@ -551,6 +560,11 @@ const Quizz = ({ page }: { page: string }) => {
                   }}
                   className="px-20 py-3 z-10 bg-priClr text-white border-2 border-black boxShadow boxShadow  font-bold w-max mx-auto ">
                   {`Next Question`}
+                </button>
+                <button
+                  onClick={storeChanges}
+                  className="px-20 py-3 z-10 bg-priClr text-white border-2 border-black boxShadow boxShadow  font-bold w-max mx-auto ">
+                  save
                 </button>
               </div>
             ))}
