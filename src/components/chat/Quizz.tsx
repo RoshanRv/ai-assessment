@@ -679,12 +679,20 @@ const Quizz = ({ page }: { page: string }) => {
               {`Get Feedback`}
             </button> */}
             {page == "chat" ? (
-              <button
-                onClick={() => reset()}
-                className="px-20 py-3 z-10 bg-priClr text-white border-2 border-black boxShadow   font-bold w-max mx-auto "
-              >
-                {`Try More Assessments`}
-              </button>
+              <div className="flex gap-9">
+                <button
+                  onClick={() => reset()}
+                  className="px-20 py-3 z-10 bg-priClr text-white border-2 border-black boxShadow   font-bold w-max mx-auto "
+                >
+                  {`Try More Assessments`}
+                </button>
+                <Link
+                  href="/generate-comic"
+                  className="px-20 py-3 z-10 bg-priClr text-white border-2 border-black boxShadow   font-bold w-max mx-auto "
+                >
+                  {`Connect with Comic`}
+                </Link>
+              </div>
             ) : (
               <button
                 onClick={() => {
