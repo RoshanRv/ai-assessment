@@ -380,8 +380,8 @@ const Quizz = ({ page }: { page: string }) => {
                 {questions[currQnIndex].options?.map((opt, i) =>
                   opt ? (
                     isEdit ? (
-                      <div key={i} className="flex gap-3">
-                        <div
+                      <div key={i} className="flex gap-3 items-center">
+                        {/* <div
                           onClick={() => {
                             setQuestions((prev) => {
                               const newQn = [...prev];
@@ -396,7 +396,19 @@ const Quizz = ({ page }: { page: string }) => {
                           } my-auto w-7 h-7 rounded-md text-white text-center font-bold`}
                         >
                           ✔️
-                        </div>
+                        </div> */}
+                        <input
+                          type="checkbox"
+                          onClick={() => {
+                            setQuestions((prev) => {
+                              const newQn = [...prev];
+                              newQn[currQnIndex].answer = opt;
+                              return newQn;
+                            });
+                          }}
+                          checked={questions[currQnIndex].answer === opt}
+                          className="accent-emerald-600 w-8 h-8 "
+                        />
                         <input
                           disabled={!isEdit}
                           onChange={(e) => {
