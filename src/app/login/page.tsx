@@ -19,7 +19,6 @@ const page = (props: Props) => {
   const setToast = useToast((state) => state.setToast);
   const setUser = useUser((state) => state.setUser);
   const setRole = useUser((state) => state.setRole);
-  const router = useRouter();
 
   const Login = async () => {
     try {
@@ -57,8 +56,7 @@ const page = (props: Props) => {
           <div className=" flex items-center h-12 w-full border-black border boxShadow">
             <div
               className="flex justify-center items-center 
-           text-black w-14 h-full "
-            >
+           text-black w-14 h-full ">
               <FaUserCircle className=" text-priClr text-2xl" />
             </div>
             <input
@@ -72,8 +70,7 @@ const page = (props: Props) => {
           <div className=" flex items-center h-12 w-full boxShadow border-black border">
             <div
               className="flex justify-center items-center 
-           text-black w-14 h-full "
-            >
+           text-black w-14 h-full ">
               <RiLockPasswordFill className=" text-priClr text-2xl" />
             </div>
             <input
