@@ -5,7 +5,6 @@ import { ReactNode, useEffect, useRef, useState } from "react";
 
 import Quizz from "@/components/chat/Quizz";
 import useQuizz from "@/store/useQuiz";
-import { zephyrQuery } from "@/utils/chat/zephyrLLM";
 import axios from "axios";
 
 type Props = {};

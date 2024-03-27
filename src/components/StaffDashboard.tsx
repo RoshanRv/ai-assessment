@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { BiPlus } from "react-icons/bi";
 
 type Props = {};
@@ -16,8 +16,7 @@ const StaffDashboard = (props: Props) => {
           <h4 className="text-2xl font-medium px-4 py-2 bg-white boxShadow w-max border-[3px] border-priClr ">{`Your Validated Assessments`}</h4>
           <Link
             href={"/assessment"}
-            className="bg-priClr  text-white capitalize border-[3px] border-black boxShadow flex items-center gap-2 px-7 py-2 rounde-md shadow-black shadow-sm font-semibold"
-          >
+            className="bg-priClr  text-white capitalize border-[3px] border-black boxShadow flex items-center gap-2 px-7 py-2 rounde-md shadow-black shadow-sm font-semibold">
             <BiPlus className="text-[23px] text-white" />
             <p className="font-semibold text-lg">Create Assessements</p>
           </Link>
