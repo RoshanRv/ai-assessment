@@ -4,11 +4,12 @@ import teacherLogin from "@/model/login";
 
 export async function POST(req: NextRequest) {
   const { name, pass }: any = await req.json();
-  await connectMongoDB();
-  const val = await teacherLogin.findOne({ userName: name, pass: pass });
-  if (val) {
+  try {
+    await connectMongoDB();
+    const val = await teacherLogin.findOne({ email: name, pass: pass });
+
     return NextResponse.json(val);
-  } else {
-    return NextResponse.json(false);
+  } catch (e) {
+    return NextResponse.json(e);
   }
 }
