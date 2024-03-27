@@ -88,7 +88,8 @@ const Quizz = ({ page }: { page: string }) => {
   const setToast = useToast((state) => state.setToast);
   const [isParsed, setIsParsed] = useState(true);
   const [currQnIndex, setCurrQnIndex] = useState(0);
-  const [questions, setQuestions] = useState([
+  const [ansWithQns, setAnsWithQns] = useState<QuestionWithAnsType[]>([]);
+  const [questions, setQuestions] = useState<QuestionType[]>([
     {
       question: "2 + 2 ",
       options: ["3", "4", "5", "6"],
@@ -247,6 +248,10 @@ const Quizz = ({ page }: { page: string }) => {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    console.log(ansWithQns);
+  }, [ansWithQns]);
 
   useEffect(() => {
     selectedType === "mcq"
@@ -528,6 +533,14 @@ const Quizz = ({ page }: { page: string }) => {
                         ? score + 1
                         : score
                     );
+                    setAnsWithQns((prev) => [
+                      ...prev,
+                      {
+                        question: questions[currQnIndex].question,
+                        answer: ans.trim(),
+                        correct: questions[currQnIndex].answer.trim(),
+                      },
+                    ]);
                   }}
                   className="px-20 py-3 z-10 bg-priClr boxShadow text-white border-2 border-black  font-bold w-max mx-auto "
                 >

@@ -11,7 +11,10 @@ export const geminiFeedback = async (score: number, topic: string) => {
   const prompt = `You're a teacher, provide feedback on the multiple-choice question scores of a student. Analyze which areas the student needs to improve or concentrate on, and provide suggestions related to those areas.The Student score:"${score}" and topic:${topic}  I need the response in JSON format like
     {
         "areas_to_improve": ["Area1", "Area2", "Area3"],
-        "guidance": ["Suggestion1", "Suggestion2", "Suggestion3"]
+        "guidance": ["Suggestion1", "Suggestion2", "Suggestion3"],
+        "strengths": ["Strength1", "Strength2", "Strength3"],
+        "weaknesses": ["Weakness1", "Weakness2", "Weakness3"],
+        "encouragement": "Encouragement message",
     }
   `;
   // const regex = /"questions"\s*:\s*\[([\s\S]*?)\]/;
