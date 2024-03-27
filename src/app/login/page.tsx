@@ -1,5 +1,6 @@
 "use client";
 
+import Header from "@/components/Header";
 import Button from "@/components/button/Button";
 import useToast from "@/store/useToast";
 import useUser from "@/store/useUser";
@@ -44,44 +45,47 @@ const page = (props: Props) => {
   };
 
   return (
-    <div className=" w-full h-[100vh] flex justify-center items-center bg">
-      {/* --- BG Designs --- */}
-      <div className=" w-96 h-auto py-10 text-center px-7 p-5 CardShadow flex flex-col gap-y-6  border-[3px] bg-white z-10 border-priClr  ">
-        <h1 className=" font-black tracking-wider text-3xl">LOGIN </h1>
-        <div className=" flex items-center h-12 w-full border-black border boxShadow">
-          <div
-            className="flex justify-center items-center 
+    <>
+      <Header />
+      <div className=" w-full h-[calc(100vh-4rem)] flex justify-center items-center bg">
+        {/* --- BG Designs --- */}
+        <div className=" w-96 h-auto py-10 text-center px-7 p-5 CardShadow flex flex-col gap-y-6  border-[3px] bg-white z-10 border-priClr  ">
+          <h1 className=" font-black tracking-wider text-3xl">LOGIN </h1>
+          <div className=" flex items-center h-12 w-full border-black border boxShadow">
+            <div
+              className="flex justify-center items-center 
            text-black w-14 h-full "
-          >
-            <FaUserCircle className=" text-priClr text-2xl" />
+            >
+              <FaUserCircle className=" text-priClr text-2xl" />
+            </div>
+            <input
+              type="text"
+              placeholder="Email"
+              value={userName}
+              onChange={(e) => setUserName(e.target.value)}
+              className="px-2 h-full outline-none w-full boxShadow"
+            />
           </div>
-          <input
-            type="text"
-            placeholder="Email"
-            value={userName}
-            onChange={(e) => setUserName(e.target.value)}
-            className="px-2 h-full outline-none w-full boxShadow"
-          />
-        </div>
-        <div className=" flex items-center h-12 w-full boxShadow border-black border">
-          <div
-            className="flex justify-center items-center 
+          <div className=" flex items-center h-12 w-full boxShadow border-black border">
+            <div
+              className="flex justify-center items-center 
            text-black w-14 h-full "
-          >
-            <RiLockPasswordFill className=" text-priClr text-2xl" />
+            >
+              <RiLockPasswordFill className=" text-priClr text-2xl" />
+            </div>
+            <input
+              type="password"
+              placeholder="Password"
+              value={pass}
+              onChange={(e) => setPass(e.target.value)}
+              className="px-2 h-full outline-none w-full boxShadow"
+            />
           </div>
-          <input
-            type="text"
-            placeholder="Password"
-            value={pass}
-            onChange={(e) => setPass(e.target.value)}
-            className="px-2 h-full outline-none w-full boxShadow"
-          />
-        </div>
 
-        <Button onclick={Login} />
+          <Button onclick={Login} />
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 
