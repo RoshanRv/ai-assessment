@@ -2,6 +2,7 @@
 
 import Button from "@/components/button/Button";
 import useToast from "@/store/useToast";
+import useUser from "@/store/useUser";
 import axios from "axios";
 import React, { useState } from "react";
 import { FaUserCircle } from "react-icons/fa";
@@ -14,6 +15,8 @@ const page = (props: Props) => {
   const [pass, setPass] = useState("");
 
   const setToast = useToast((state) => state.setToast);
+  const setUser = useUser((state) => state.setUser);
+  const setRole = useUser((state) => state.setRole);
 
   const Login = async () => {
     try {
@@ -25,7 +28,13 @@ const page = (props: Props) => {
             pass: pass,
           }
         );
+        setToast({
+          msg: "Logged In",
+          variant: "success",
+        });
         localStorage.setItem("ai-assessment", JSON.stringify(data));
+        setUser(data);
+        setRole(data.role);
       } else {
         setToast({ msg: "Fill All Details", variant: "error" });
       }
