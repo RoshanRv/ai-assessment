@@ -45,17 +45,20 @@ const StudentDashboard = (props: Props) => {
               <Link
                 href={`/assessment/${assess._id}`}
                 // onClick={goToAssessment(assess._id)}
-                className="p-3 flex flex-col gap-2 boxShadow border-[3px] bg-white hover:bg-black/5 transition-all z-10 border-priClr">
+                className="p-3 flex flex-col gap-2 boxShadow border-[3px] bg-white  transition-all z-10 border-priClr"
+              >
                 <div className="flex gap-4 items-center ">
-                  <h1 className="text-2xl font-semibold ">{assess?.topic}</h1>
+                  <h1 className="text-2xl font-semibold capitalize ">
+                    {assess?.topic}
+                  </h1>
                   {/* DIFFICULTY */}
-                  <p className="text-xs px-4 py-0.5 rounded-sm text-white font-semibold  bg-priClr">
+                  <p className="text-xs px-4 py-0.5 rounded-sm capitalize text-white font-semibold  bg-priClr">
                     {assess?.difficulty}
                   </p>
                 </div>
-                <div className="flex justify-between items-center font-medium text-sm text-gray-400">
+                <div className="flex justify-between items-center capitalize font-medium text-sm text-gray-400">
                   <p>{assess?.staffName}</p>
-                  <p>{assess?.createdAt}</p>
+                  <p>{assess?.createdAt.split("T")[0]}</p>
                 </div>
               </Link>
             ))}
@@ -71,7 +74,8 @@ const StudentDashboard = (props: Props) => {
           </div>
           <Link
             href={"/assessment/none"}
-            className="bg-priClr  text-white capitalize border-[3px] border-black boxShadow flex items-center gap-2 px-7 py-3 rounde-md shadow-black shadow-sm font-semibold">
+            className="bg-priClr  text-white capitalize border-[3px] border-black boxShadow flex items-center gap-2 px-7 py-3 rounde-md shadow-black shadow-sm font-semibold"
+          >
             <p className="font-bold">Take AI Generated Assessments</p>
           </Link>
         </div>

@@ -2,12 +2,10 @@ import useUser from "@/store/useUser";
 import Link from "next/link";
 import React from "react";
 import { BiLogOut } from "react-icons/bi";
-import { useRouter } from "next/navigation";
 
 type Props = {};
 
 const Header = (props: Props) => {
-  const route = useRouter();
   const user = useUser((state) => state.user);
   const setUser = useUser((state) => state.setUser);
   const setRole = useUser((state) => state.setRole);
@@ -16,7 +14,6 @@ const Header = (props: Props) => {
     setUser(null);
     setRole(null);
     localStorage.removeItem("ai-assessment");
-    route.push("/");
   };
   return (
     <nav className="px-4 py-4 border-b  bg-white h-[4rem] flex items-center justify-between">
@@ -25,11 +22,14 @@ const Header = (props: Props) => {
       </Link>
       <div className="flex gap-4 items-center">
         <p>{user?.userName}</p>
-        <button
-          onClick={logout}
-          className="p-3 rounded-full hover:bg-black/10 transition-all">
-          <BiLogOut />
-        </button>
+        {user?._id && (
+          <button
+            onClick={logout}
+            className="p-3 rounded-full hover:bg-black/10 transition-all"
+          >
+            <BiLogOut />
+          </button>
+        )}
       </div>
     </nav>
   );
