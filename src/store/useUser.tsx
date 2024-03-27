@@ -13,12 +13,9 @@ interface RoleType {
 }
 
 const useUser = create<RoleType>()((set) => ({
-  role: "staff",
+  role: null,
   setRole: (role) => set({ role }),
-  user: {
-    name: "Roshan",
-    email: "roshan@gmail.com",
-  },
+  user: null,
   setUser: (user) => set({ user }),
 }));
 
