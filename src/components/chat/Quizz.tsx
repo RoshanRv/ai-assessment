@@ -4,6 +4,7 @@ import useQuizz from "@/store/useQuiz";
 import useToast from "@/store/useToast";
 import useUser from "@/store/useUser";
 import { gemini } from "@/utils/chat/geminiAPI";
+import { geminiFeedback } from "@/utils/chat/geminiFeedbackAPI";
 import axios from "axios";
 import Image from "next/image";
 import Link from "next/link";
@@ -100,7 +101,7 @@ const Quizz = ({ page }: { page: string }) => {
       answer: "6",
     },
   ]);
-  const [isEdit, setIsEdit] = useState(true);
+  const [isEdit, setIsEdit] = useState(false);
   const [loading, setLoading] = useState(false);
   const [ans, setAns] = useState("");
   const [isSubmit, setIsSubmit] = useState(false);
@@ -208,6 +209,9 @@ const Quizz = ({ page }: { page: string }) => {
   const handleFeedback = async () => {
     try {
       console.log("feedback");
+      const feedback = await geminiFeedback(score, ques);
+      setFeedback(feedback);
+      setIsEnd(true);
       return;
 
       setLoading(true);
@@ -346,6 +350,7 @@ const Quizz = ({ page }: { page: string }) => {
               </button>
             </div>
           </div>
+
           {/* Button */}
           <button
             onClick={handleBegin}
@@ -509,6 +514,7 @@ const Quizz = ({ page }: { page: string }) => {
                     onClick={() => {
                       setIsEnd(true);
                       calculatePercentage();
+                      handleFeedback();
                     }}
                     className="px-20 py-3 z-10 bg-priClr text-white border-2 border-black boxShadow boxShadow  font-bold w-max mx-auto ">
                     {`End Quizz`}
@@ -583,7 +589,18 @@ const Quizz = ({ page }: { page: string }) => {
           {feedback && !loading && (
             <div className="w-full p-6 border-2 border-priClr boxShadow mx-auto bg-white z-10 flex flex-col gap-3 ">
               <h1 className="font-semibold text-center text-2xl">Feedback</h1>
-              <p>{feedback}</p>
+              <h1 className="text-lg font-semibold">Areas to Improve</h1>
+              <ul>
+                {feedback["areas_to_improve"]?.map((point) => {
+                  return <li className="list-item list-disc ml-10">{point}</li>;
+                })}
+              </ul>
+              <h1 className="font-semibold text-lg">Guidance</h1>
+              <ul>
+                {feedback["guidance"]?.map((point) => {
+                  return <li className="list-item list-disc ml-10">{point}</li>;
+                })}
+              </ul>
             </div>
           )}
           {/* Loading */}
