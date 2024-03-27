@@ -57,10 +57,10 @@ const HomeContent = () => {
         </section>
         <section className="flex justify-center gap-6">
           <Link
-            href={"/dashboard"}
+            href={"/signup"}
             className="bg-white  text-priClr capitalize border-[3px] border-black boxShadow flex items-center gap-2 px-7 py-3 rounde-md shadow-black shadow-sm font-semibold"
           >
-            <p className="font-bold">Go To Dashboard</p>
+            <p className="font-bold">Sign Up</p>
             <AiOutlineDoubleRight className="text-[23px] text-priClr" />
           </Link>
           <Link
