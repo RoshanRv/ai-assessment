@@ -130,9 +130,9 @@ const Quizz = ({ page }: { page: string }) => {
 
   useEffect(() => {
     if (role == "staff") {
-      setIsEdit(false);
-    } else {
       setIsEdit(true);
+    } else {
+      setIsEdit(false);
     }
   }, [isStart]);
 
@@ -567,7 +567,7 @@ const Quizz = ({ page }: { page: string }) => {
                 )}
               </div>
             ) : (
-              <div className="flex gap-4 items-center w-1/2 mx-auto ">
+              <div className="flex gap-4 mt-5 items-center w-1/2 mx-auto ">
                 <button
                   onClick={() => {
                     console.log("validate");
@@ -580,28 +580,13 @@ const Quizz = ({ page }: { page: string }) => {
                   }}
                   className={`bg-priClr px-20 py-3 z-10  text-white border-2 border-black boxShadow  font-bold w-max mx-auto `}
                 >
-                  Validate Question
-                </button>
-
-                <button
-                  onClick={() => {
-                    console.log("submit");
-
-                    if (questions.length <= currQnIndex + 1) return;
-                    setLoading(false);
-                    setIsSubmit(false);
-                    setAns("");
-                    setCurrQnIndex((prev) => prev + 1);
-                  }}
-                  className="px-20 py-3 z-10 bg-priClr text-white border-2 border-black boxShadow boxShadow  font-bold w-max mx-auto "
-                >
-                  {`Next Question`}
+                  Validate & Next Question
                 </button>
                 <button
                   onClick={storeChanges}
                   className="px-20 py-3 z-10 bg-priClr text-white border-2 border-black boxShadow boxShadow  font-bold w-max mx-auto "
                 >
-                  save
+                  Save & Move To Dashboard
                 </button>
               </div>
             ))}
