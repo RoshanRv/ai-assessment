@@ -6,7 +6,7 @@ export async function POST(req: NextRequest) {
   const { name, pass }: any = await req.json();
   try {
     await connectMongoDB();
-    const val = await teacherLogin.findOne({ userName: name, pass: pass });
+    const val = await teacherLogin.findOne({ email: name, pass: pass });
 
     return NextResponse.json(val);
   } catch (e) {

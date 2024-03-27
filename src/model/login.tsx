@@ -7,6 +7,9 @@ const schema = new Schema({
   userName: {
     type: String,
   },
+  email: {
+    type: String,
+  },
   pass: {
     type: String,
   },
