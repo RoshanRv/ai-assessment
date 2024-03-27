@@ -22,7 +22,7 @@ interface useQuizzType {
 const useQuizz = create<useQuizzType>((set) => ({
   selectedType: "mcq",
   setSelectedType: (val: string) => set({ selectedType: val }),
-  selectedLevel: "begin",
+  selectedLevel: "easy",
   setSelectedLevel: (val: string) => set({ selectedLevel: val }),
   ques: "",
   setQues: (val: string) => set({ ques: val }),

@@ -9,10 +9,10 @@ const StudentDashboard = (props: Props) => {
   const [assessments, setAssessments] = useState<AssessmentType[]>([]);
 
   return (
-    <section className="p-6  min-h-[calc(100vh-4rem)] flex flex-col gap-6">
+    <section className="p-6 px-10 min-h-[calc(100vh-4rem)] flex flex-col gap-6 bg">
       {/* Validated Assessments */}
       <>
-        <h4 className="text-2xl font-medium">{`Staff Validated Assessments`}</h4>
+        <h4 className="text-2xl font-medium px-4 py-2 bg-white boxShadow w-max border-[3px] border-priClr ">{`Staff Validated Assessments`}</h4>
         {assessments.length === 0 ? (
           <div className="boxShadow  justify-center items-center flex flex-col gap-y-6  border-[3px] bg-white z-10 border-priClr p-3 py-5 w-full">
             <div className="relative w-40 h-40 ">
@@ -48,7 +48,7 @@ const StudentDashboard = (props: Props) => {
       </>
       {/*  AI Generated Quiz */}
       <>
-        <h4 className="text-2xl font-medium">{`AI Generated Assessments`}</h4>
+        <h4 className="text-2xl font-medium px-4 py-2 bg-white boxShadow w-max border-[3px] border-priClr ">{`AI Generated Assessments`}</h4>
         <div className="boxShadow  justify-center items-center flex flex-col gap-y-6  border-[3px] bg-white z-10 border-priClr p-3 py-5 w-full">
           <div className="relative w-[17%] ">
             <Image alt="" src={AIGEN} />

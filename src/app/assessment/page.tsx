@@ -66,11 +66,11 @@ const Chat = (props: Props) => {
   }, [input]);
 
   useEffect(() => {
-    zephyrQuery({
-      inputs: "generate a quiz about solar system in JSON format",
-    }).then((response) => {
-      console.log(JSON.stringify(response));
-    });
+    // zephyrQuery({
+    //   inputs: "generate a quiz about solar system in JSON format",
+    // }).then((response) => {
+    //   console.log(JSON.stringify(response));
+    // });
   }, []);
 
   return (
