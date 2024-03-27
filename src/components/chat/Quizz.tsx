@@ -2,6 +2,7 @@
 
 import useQuizz from "@/store/useQuiz";
 import useUser from "@/store/useUser";
+import { gemini } from "@/utils/chat/geminiAPI";
 import axios from "axios";
 import Image from "next/image";
 import Link from "next/link";
@@ -96,7 +97,7 @@ const Quizz = ({ page }: { page: string }) => {
       answer: "6",
     },
   ]);
-  const [isEdit, setIsEdit] = useState(false);
+  const [isEdit, setIsEdit] = useState(true);
   const [loading, setLoading] = useState(false);
   const [ans, setAns] = useState("");
   const [isSubmit, setIsSubmit] = useState(false);
@@ -167,20 +168,23 @@ const Quizz = ({ page }: { page: string }) => {
     setIsSubmit(false);
     setQuesNo(quesNo + 1);
     try {
-      const { data } = await axios.post(`http://localhost:5000/api/v1/chat`, {
-        user_input:
-          selectedType === "mcq"
-            ? `generate another 1 MCQ question about ${ques} in JSON format`
-            : `generate another 1 True or Flase question about ${ques} in JSON format`,
-        temperature: 0.8,
-        history,
-      });
-      setHistory(data.results[0].history);
-      handleParseQuestion(
-        data.results[0].history.visible[
-          data.results[0].history.visible.length - 1
-        ][1]
-      );
+      // const { data } = await axios.post(`http://localhost:5000/api/v1/chat`, {
+      //   user_input:
+      //     selectedType === "mcq"
+      //       ? `generate another 1 MCQ question about ${ques} in JSON format`
+      //       : `generate another 1 True or Flase question about ${ques} in JSON format`,
+      //   temperature: 0.8,
+      //   history,
+      // });
+      // setHistory(data.results[0].history);
+      // handleParseQuestion(
+      //   data.results[0].history.visible[
+      //     data.results[0].history.visible.length - 1
+      //   ][1]
+      // );
+      const ans = await gemini(ques, selectedLevel);
+      console.log(ans);
+      setQuestions(ans);
     } catch (e) {
       console.log(e);
     } finally {
@@ -190,6 +194,9 @@ const Quizz = ({ page }: { page: string }) => {
 
   const handleFeedback = async () => {
     try {
+      console.log("feedback");
+      return;
+
       setLoading(true);
       const { data } = await axios.post(`http://localhost:5000/api/v1/chat`, {
         user_input: `can you provide me a feedback on how can I improve, as I scored ${score} out of ${quesNo} in test about ${ques}?`,
@@ -362,33 +369,53 @@ const Quizz = ({ page }: { page: string }) => {
                   });
                 }}
                 value={questions[currQnIndex]?.question}
-                className="bg-priClr boxShadow p-4 text-white border-2  border-black   font-bold text-2xl "
+                className={`${
+                  isEdit ? "!cursor-text" : ""
+                } bg-priClr boxShadow w-full text-wrap whitespace-break-spaces  p-4 text-white border-2  border-black   font-bold text-2xl `}
               >
                 {/* {`${questions[currQnIndex]?.question} ?`} */}
               </input>
               {/* Opts */}
               <div className="grid grid-cols-2 gap-4">
-                {questions[currQnIndex].options.map((opt, i) =>
+                {questions[currQnIndex].options?.map((opt, i) =>
                   opt ? (
                     isEdit ? (
-                      <input
-                        disabled={!isEdit}
-                        onChange={(e) => {
-                          setQuestions((prev) => {
-                            const newQn = [...prev];
-                            newQn[currQnIndex].options[i] =
-                              e.target.value || " ";
-                            return newQn;
-                          });
-                        }}
-                        value={opt}
-                        className={` p-4 text-xl font-bold shadow-md ${
-                          ans === opt
-                            ? "bg-priClr boxShadow text-white border-2 border-black boxShadow"
-                            : "bg-white hover:bg-gray-100 border-2 border-priClr text-priClr"
-                        }     hover:scale-95  transition-all `}
-                        key={i}
-                      ></input>
+                      <div key={i} className="flex gap-3">
+                        <div
+                          onClick={() => {
+                            setQuestions((prev) => {
+                              const newQn = [...prev];
+                              newQn[currQnIndex].answer = opt;
+                              return newQn;
+                            });
+                          }}
+                          className={`${
+                            questions[currQnIndex].answer === opt
+                              ? "bg-green-600 "
+                              : "cursor-pointer "
+                          } my-auto w-7 h-7 rounded-md text-white text-center font-bold`}
+                        >
+                          ✔️
+                        </div>
+                        <input
+                          disabled={!isEdit}
+                          onChange={(e) => {
+                            setQuestions((prev) => {
+                              const newQn = [...prev];
+                              newQn[currQnIndex].options[i] =
+                                e.target.value || " ";
+                              return newQn;
+                            });
+                          }}
+                          value={opt}
+                          className={`w-fit p-4 text-xl font-bold shadow-md ${
+                            ans === opt
+                              ? "bg-priClr boxShadow text-white border-2 border-black boxShadow"
+                              : "bg-white hover:bg-gray-100 border-2 border-priClr text-priClr"
+                          }     `}
+                          // key={i}
+                        ></input>
+                      </div>
                     ) : (
                       <button
                         onClick={() => !isSubmit && setAns(opt.trim())}
@@ -442,43 +469,89 @@ const Quizz = ({ page }: { page: string }) => {
               </div>
             </div>
           )}
-          {!loading && (
-            <div className="flex gap-4 items-center w-1/2 mx-auto ">
-              <button
-                onClick={() => {
-                  setIsSubmit(true);
-                  setScore(
-                    ans.trim() === questions[currQnIndex].answer.trim()
-                      ? score + 1
-                      : score
-                  );
-                }}
-                className="px-20 py-3 z-10 bg-priClr boxShadow text-white border-2 border-black  font-bold w-max mx-auto "
-              >
-                Submit Answer
-              </button>
-              <button
-                disabled={isSubmit ? false : true}
-                onClick={isSubmit ? handleBegin : () => null}
-                className={`${
-                  isSubmit ? "bg-priClr" : "bg-priClr/20"
-                } px-20 py-3 z-10  text-white border-2 border-black boxShadow boxShadow  font-bold w-max mx-auto `}
-              >
-                Next Question
-              </button>
-              {(page === "roadmap" || page === "chat") && (
+          {!loading &&
+            (!isEdit ? (
+              <div className="flex gap-4 items-center w-1/2 mx-auto ">
                 <button
                   onClick={() => {
-                    setIsEnd(true);
-                    calculatePercentage();
+                    setIsSubmit(true);
+                    setScore(
+                      ans.trim() === questions[currQnIndex].answer.trim()
+                        ? score + 1
+                        : score
+                    );
+                  }}
+                  className="px-20 py-3 z-10 bg-priClr boxShadow text-white border-2 border-black  font-bold w-max mx-auto "
+                >
+                  Submit Answer
+                </button>
+                <button
+                  disabled={isSubmit ? false : true}
+                  onClick={
+                    isSubmit
+                      ? () => {
+                          if (questions.length <= currQnIndex + 1)
+                            return handleFeedback();
+                          setLoading(false);
+                          setIsSubmit(false);
+                          setAns("");
+                          setCurrQnIndex((prev) => prev + 1);
+                        }
+                      : () => null
+                  }
+                  className={`${
+                    isSubmit ? "bg-priClr" : "bg-priClr/20"
+                  } px-20 py-3 z-10  text-white border-2 border-black boxShadow boxShadow  font-bold w-max mx-auto `}
+                >
+                  Next Question
+                </button>
+                {(page === "roadmap" || page === "chat") && (
+                  <button
+                    onClick={() => {
+                      setIsEnd(true);
+                      calculatePercentage();
+                    }}
+                    className="px-20 py-3 z-10 bg-priClr text-white border-2 border-black boxShadow boxShadow  font-bold w-max mx-auto "
+                  >
+                    {`End Quizz`}
+                  </button>
+                )}
+              </div>
+            ) : (
+              <div className="flex gap-4 items-center w-1/2 mx-auto ">
+                <button
+                  onClick={() => {
+                    console.log("validate");
+
+                    if (questions.length <= currQnIndex + 1)
+                      return handleFeedback();
+                    setLoading(false);
+                    setIsSubmit(false);
+                    setAns("");
+                    setCurrQnIndex((prev) => prev + 1);
+                  }}
+                  className={`bg-priClr px-20 py-3 z-10  text-white border-2 border-black boxShadow  font-bold w-max mx-auto `}
+                >
+                  Validate Question
+                </button>
+
+                <button
+                  onClick={() => {
+                    console.log("submit");
+
+                    if (questions.length <= currQnIndex + 1)
+                      return handleFeedback();
+                    setLoading(false);
+                    setIsSubmit(false);
+                    setAns("");
+                    setCurrQnIndex((prev) => prev + 1);
                   }}
                   className="px-20 py-3 z-10 bg-priClr text-white border-2 border-black boxShadow boxShadow  font-bold w-max mx-auto "
                 >
-                  {`End Quizz`}
+                  {`Next Question`}
                 </button>
-              )}
-            </div>
-          )}
+              </div>
+            ))}
         </div>
       )}
 
