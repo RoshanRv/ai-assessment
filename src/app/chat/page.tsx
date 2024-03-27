@@ -5,7 +5,7 @@ import { HfInference } from "@huggingface/inference";
 import axios from "axios";
 import Quizz from "@/components/chat/Quizz";
 import useQuizz from "@/store/useQuiz";
-import { zephyrQuery } from "@/utils/chat/zephyrLLM";
+// import { zephyrQuery } from "@/utils/chat/zephyrLLM";
 
 type Props = {};
 
@@ -65,11 +65,11 @@ const Chat = (props: Props) => {
   }, [input]);
 
   useEffect(() => {
-    zephyrQuery({
-      inputs: "generate a quiz about solar system in JSON format",
-    }).then((response) => {
-      console.log(JSON.stringify(response));
-    });
+    // zephyrQuery({
+    //   inputs: "generate a quiz about solar system in JSON format",
+    // }).then((response) => {
+    //   console.log(JSON.stringify(response));
+    // });
   }, []);
 
   return (
