@@ -1,11 +1,12 @@
 "use client";
 
-import React, { ReactNode, useEffect, useRef, useState } from "react";
 import { HfInference } from "@huggingface/inference";
-import axios from "axios";
+import { ReactNode, useEffect, useRef, useState } from "react";
+
 import Quizz from "@/components/chat/Quizz";
 import useQuizz from "@/store/useQuiz";
-// import { zephyrQuery } from "@/utils/chat/zephyrLLM";
+import { zephyrQuery } from "@/utils/chat/zephyrLLM";
+import axios from "axios";
 
 type Props = {};
 
