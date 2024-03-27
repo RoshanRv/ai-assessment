@@ -1,8 +1,8 @@
 import useUser from "@/store/useUser";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import React from "react";
 import { BiLogOut } from "react-icons/bi";
-import { useRouter } from "next/navigation";
 
 type Props = {};
 
