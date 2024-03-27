@@ -106,13 +106,16 @@ const Quizz = ({ page }: { page: string }) => {
   const [ans, setAns] = useState("");
   const [isSubmit, setIsSubmit] = useState(false);
 
-  const [feedback, setFeedback] = useState("");
+  const [feedback, setFeedback] = useState({
+    guidance: [],
+    areas_to_improve: [],
+  });
 
   const [percentage, setPercentage] = useState(0);
   const [isPass, setIsPass] = useState(false);
 
   const calculatePercentage = () => {
-    const percentage = Math.ceil((score / quesNo) * 100);
+    const percentage = Math.ceil((score / currQnIndex) * 100);
     setPercentage(percentage);
     percentage >= 60 ? setIsPass(true) : setIsPass(false);
   };
@@ -123,7 +126,7 @@ const Quizz = ({ page }: { page: string }) => {
     setIsEnd(false);
     setQuesNo(0);
     setScore(0);
-    setFeedback("");
+    setFeedback({ guidance: [], areas_to_improve: [] });
   };
 
   const handleParseQuestion = (ques: string) => {
@@ -241,7 +244,7 @@ const Quizz = ({ page }: { page: string }) => {
 
   return (
     <main
-      className={`bg-gray-100 left-0 bg  w-full top-0 h-full z-10 absolute  flex  transition-transform gap-6 flex-col py-10 `}
+      className={`bg-gray-100 left-0 bg  w-full top-0 min-h-screen z-10 absolute  flex  transition-transform gap-6 flex-col py-10 `}
     >
       {/* BACK */}
       <div className="flex gap-2 items-center px-10">
@@ -260,7 +263,7 @@ const Quizz = ({ page }: { page: string }) => {
       {/* Chooooses */}
       {!isStart && (
         <div
-          className={`flex flex-col w-4/12 bg-white px-10 boxShadow border-[3px] border-priClr mx-auto justify-around h-full ${
+          className={`flex flex-col w-4/12 bg-white py-6 gap-6 px-10 boxShadow border-[3px] border-priClr mx-auto justify-around h-full ${
             isStart ? "opacity-0" : "opacity-100"
           } transition-all `}
         >
@@ -474,7 +477,7 @@ const Quizz = ({ page }: { page: string }) => {
             </div>
           )}
           {isSubmit && (
-            <div className="p-3 shadow-md bg-white boxShadow w-max mx-auto">
+            <div className="p-3 shadow-md mt-5 bg-white boxShadow w-max mx-auto">
               {/* Result Gif */}
               <div className="w-40 h-40 relative mx-auto">
                 <Image
@@ -503,7 +506,7 @@ const Quizz = ({ page }: { page: string }) => {
           )}
           {!loading &&
             (!isEdit ? (
-              <div className="flex gap-4 items-center w-1/2 mx-auto ">
+              <div className="flex gap-4 mt-5 items-center w-1/2 mx-auto ">
                 <button
                   onClick={() => {
                     setIsSubmit(true);
@@ -599,7 +602,7 @@ const Quizz = ({ page }: { page: string }) => {
             <div className="grid grid-cols-2 gap-6 w-full">
               {/* Score */}
               <div className=" px-10  z-10 items-center p-6 flex flex-col gap-6 bg-priClr border-2 border-black text-white boxShadow justify-center ">
-                <p className="text-5xl font-semibold ">{`${score} / ${quesNo}`}</p>
+                <p className="text-5xl font-semibold ">{`${score} / ${currQnIndex}`}</p>
               </div>
               {/* Percentage */}
               <div
@@ -658,7 +661,7 @@ const Quizz = ({ page }: { page: string }) => {
                 onClick={() => reset()}
                 className="px-20 py-3 z-10 bg-priClr text-white border-2 border-black boxShadow   font-bold w-max mx-auto "
               >
-                {`Go to Quizz`}
+                {`Try More Assessments`}
               </button>
             ) : (
               <button
