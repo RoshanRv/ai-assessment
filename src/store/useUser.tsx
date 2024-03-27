@@ -1,8 +1,9 @@
 import { create } from "zustand";
 
 type UserType = {
-  name: string;
+  userName: string;
   email: string;
+  _id: string;
 };
 
 interface RoleType {
@@ -13,12 +14,9 @@ interface RoleType {
 }
 
 const useUser = create<RoleType>()((set) => ({
-  role: "staff",
+  role: null,
   setRole: (role) => set({ role }),
-  user: {
-    name: "Roshan",
-    email: "roshan@gmail.com",
-  },
+  user: null,
   setUser: (user) => set({ user }),
 }));
 

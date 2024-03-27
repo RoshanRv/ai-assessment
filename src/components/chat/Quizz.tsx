@@ -228,15 +228,13 @@ const Quizz = ({ page }: { page: string }) => {
 
   return (
     <main
-      className={`bg-gray-100 left-0 bg  w-full top-0 h-full z-10 absolute  flex  transition-transform gap-6 flex-col py-10 `}
-    >
+      className={`bg-gray-100 left-0 bg  w-full top-0 h-full z-10 absolute  flex  transition-transform gap-6 flex-col py-10 `}>
       {/* BACK */}
       <div className="flex gap-2 items-center px-10">
         {!isStart && (
           <Link
             href={"/dashboard"}
-            className="bg-priClr  text-white capitalize border-[3px] border-black boxShadow flex items-center gap-2 px-3 py-2 rounde-md shadow-black shadow-sm font-semibold"
-          >
+            className="bg-priClr  text-white capitalize border-[3px] border-black boxShadow flex items-center gap-2 px-3 py-2 rounde-md shadow-black shadow-sm font-semibold">
             <BiChevronLeft className="text-3xl " />
           </Link>
         )}
@@ -249,8 +247,7 @@ const Quizz = ({ page }: { page: string }) => {
         <div
           className={`flex flex-col w-4/12 bg-white px-10 boxShadow border-[3px] border-priClr mx-auto justify-around h-full ${
             isStart ? "opacity-0" : "opacity-100"
-          } transition-all `}
-        >
+          } transition-all `}>
           {/*          Quizzz Types           */}
           <div className="flex flex-col gap-4">
             <p className="font-semibold text-priClr  text-3xl text-left ">
@@ -317,8 +314,7 @@ const Quizz = ({ page }: { page: string }) => {
                   selectedLevel === "easy"
                     ? "bg-priClr text-white border-2 border-black boxShadow"
                     : "text-priClr bg-white border-2 border-priClr"
-                } font-bold`}
-              >
+                } font-bold`}>
                 {`Easy`}
               </button>
               <button
@@ -327,8 +323,7 @@ const Quizz = ({ page }: { page: string }) => {
                   selectedLevel === "medium"
                     ? "bg-priClr text-white border-2 border-black boxShadow"
                     : "text-priClr bg-white border-2 border-priClr"
-                } font-bold`}
-              >
+                } font-bold`}>
                 {`Medium`}
               </button>
               <button
@@ -337,8 +332,7 @@ const Quizz = ({ page }: { page: string }) => {
                   selectedLevel === "hard"
                     ? "bg-priClr text-white border-2 border-black boxShadow"
                     : "text-priClr bg-white border-2 border-priClr"
-                } font-bold`}
-              >
+                } font-bold`}>
                 {`Hard`}
               </button>
             </div>
@@ -347,8 +341,7 @@ const Quizz = ({ page }: { page: string }) => {
           {/* Button */}
           <button
             onClick={handleBegin}
-            className="px-20 py-3 z-10 bg-priClr border-2 border-black boxShadow text-white   font-bold w-full mx-auto "
-          >
+            className="px-20 py-3 z-10 bg-priClr border-2 border-black boxShadow text-white   font-bold w-full mx-auto ">
             {role === "staff" ? "Validate Assessment" : "Begin Assessment"}
           </button>
         </div>
@@ -358,8 +351,7 @@ const Quizz = ({ page }: { page: string }) => {
         <div
           className={`${
             isStart ? "opacity-100" : "opacity-0"
-          } transition-all flex flex-col justify-around h-full z-10 `}
-        >
+          } transition-all flex flex-col justify-around h-full z-10 `}>
           {/* Ques/ Opt... */}
           {!loading ? (
             <div className="w-1/2 mx-auto flex flex-col gap-8">
@@ -376,8 +368,7 @@ const Quizz = ({ page }: { page: string }) => {
                 value={questions[currQnIndex]?.question}
                 className={`${
                   isEdit ? "!cursor-text" : ""
-                } bg-priClr boxShadow w-full text-wrap whitespace-break-spaces  p-4 text-white border-2  border-black   font-bold text-2xl `}
-              >
+                } bg-priClr boxShadow w-full text-wrap whitespace-break-spaces  p-4 text-white border-2  border-black   font-bold text-2xl `}>
                 {/* {`${questions[currQnIndex]?.question} ?`} */}
               </input>
               {/* Opts */}
@@ -398,8 +389,7 @@ const Quizz = ({ page }: { page: string }) => {
                             questions[currQnIndex].answer === opt
                               ? "bg-green-600 "
                               : "cursor-pointer "
-                          } my-auto w-7 h-7 rounded-md text-white text-center font-bold`}
-                        >
+                          } my-auto w-7 h-7 rounded-md text-white text-center font-bold`}>
                           ✔️
                         </div>
                         <input
@@ -429,8 +419,7 @@ const Quizz = ({ page }: { page: string }) => {
                             ? "bg-priClr boxShadow text-white border-2 border-black boxShadow"
                             : "bg-white hover:bg-gray-100 border-2 border-priClr text-priClr"
                         }     hover:scale-95 transition-all `}
-                        key={i}
-                      >
+                        key={i}>
                         {opt}
                       </button>
                     )
@@ -466,8 +455,7 @@ const Quizz = ({ page }: { page: string }) => {
                   ans.trim() === questions[currQnIndex].answer.trim()
                     ? "bg-emerald-500"
                     : "bg-red-500"
-                } `}
-              >
+                } `}>
                 {ans.trim() === questions[currQnIndex].answer.trim()
                   ? "Correct"
                   : `Wrong, Correct Answer: ${questions[currQnIndex].answer}`}
@@ -486,8 +474,7 @@ const Quizz = ({ page }: { page: string }) => {
                         : score
                     );
                   }}
-                  className="px-20 py-3 z-10 bg-priClr boxShadow text-white border-2 border-black  font-bold w-max mx-auto "
-                >
+                  className="px-20 py-3 z-10 bg-priClr boxShadow text-white border-2 border-black  font-bold w-max mx-auto ">
                   Submit Answer
                 </button>
                 <button
@@ -506,8 +493,7 @@ const Quizz = ({ page }: { page: string }) => {
                   }
                   className={`${
                     isSubmit ? "bg-priClr" : "bg-priClr/20"
-                  } px-20 py-3 z-10  text-white border-2 border-black boxShadow boxShadow  font-bold w-max mx-auto `}
-                >
+                  } px-20 py-3 z-10  text-white border-2 border-black boxShadow boxShadow  font-bold w-max mx-auto `}>
                   Next Question
                 </button>
                 {(page === "roadmap" || page === "chat") && (
@@ -517,8 +503,7 @@ const Quizz = ({ page }: { page: string }) => {
                       calculatePercentage();
                       handleFeedback();
                     }}
-                    className="px-20 py-3 z-10 bg-priClr text-white border-2 border-black boxShadow boxShadow  font-bold w-max mx-auto "
-                  >
+                    className="px-20 py-3 z-10 bg-priClr text-white border-2 border-black boxShadow boxShadow  font-bold w-max mx-auto ">
                     {`End Quizz`}
                   </button>
                 )}
@@ -536,8 +521,7 @@ const Quizz = ({ page }: { page: string }) => {
                     setAns("");
                     setCurrQnIndex((prev) => prev + 1);
                   }}
-                  className={`bg-priClr px-20 py-3 z-10  text-white border-2 border-black boxShadow  font-bold w-max mx-auto `}
-                >
+                  className={`bg-priClr px-20 py-3 z-10  text-white border-2 border-black boxShadow  font-bold w-max mx-auto `}>
                   Validate Question
                 </button>
 
@@ -552,8 +536,7 @@ const Quizz = ({ page }: { page: string }) => {
                     setAns("");
                     setCurrQnIndex((prev) => prev + 1);
                   }}
-                  className="px-20 py-3 z-10 bg-priClr text-white border-2 border-black boxShadow boxShadow  font-bold w-max mx-auto "
-                >
+                  className="px-20 py-3 z-10 bg-priClr text-white border-2 border-black boxShadow boxShadow  font-bold w-max mx-auto ">
                   {`Next Question`}
                 </button>
               </div>
@@ -578,8 +561,7 @@ const Quizz = ({ page }: { page: string }) => {
               <div
                 className={` px-10  z-10 items-center p-6 flex flex-col gap-6  ${
                   isPass ? "bg-emerald-700" : "bg-red-700"
-                } border-2 border-black text-white boxShadow justify-center `}
-              >
+                } border-2 border-black text-white boxShadow justify-center `}>
                 <p className="text-5xl font-semibold ">{`${percentage}%`}</p>
               </div>
             </div>
@@ -622,15 +604,13 @@ const Quizz = ({ page }: { page: string }) => {
               onClick={() => {
                 handleFeedback();
               }}
-              className="px-20 py-3 z-10 bg-priClr text-white border-2 border-black boxShadow   font-bold w-max mx-auto "
-            >
+              className="px-20 py-3 z-10 bg-priClr text-white border-2 border-black boxShadow   font-bold w-max mx-auto ">
               {`Get Feedback`}
             </button>
             {page == "chat" ? (
               <button
                 onClick={() => reset()}
-                className="px-20 py-3 z-10 bg-priClr text-white border-2 border-black boxShadow   font-bold w-max mx-auto "
-              >
+                className="px-20 py-3 z-10 bg-priClr text-white border-2 border-black boxShadow   font-bold w-max mx-auto ">
                 {`Go to Quizz`}
               </button>
             ) : (
@@ -639,8 +619,7 @@ const Quizz = ({ page }: { page: string }) => {
                   reset();
                   route.back();
                 }}
-                className="px-20 py-3 z-10 bg-priClr text-white border-2 border-black boxShadow   font-bold w-max mx-auto "
-              >
+                className="px-20 py-3 z-10 bg-priClr text-white border-2 border-black boxShadow   font-bold w-max mx-auto ">
                 {`Go to Learning Path`}
               </button>
             )}

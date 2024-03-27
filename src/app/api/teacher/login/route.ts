@@ -8,8 +8,19 @@ export async function POST(req: NextRequest) {
     await connectMongoDB();
     const val = await teacherLogin.findOne({ email: name, pass: pass });
 
+    if (!val) {
+      throw new Error("Invalid Credentials");
+    }
+
     return NextResponse.json(val);
   } catch (e) {
-    return NextResponse.json(e);
+    return NextResponse.json(
+      {
+        message: e,
+      },
+      {
+        status: 400,
+      }
+    );
   }
 }
