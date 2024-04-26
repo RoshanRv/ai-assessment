@@ -18,6 +18,9 @@ import { Zoom } from "@/components/generate-comic/Zoom";
 import { FaGear } from "react-icons/fa6";
 import { useSpeechSynthesis } from "@/utils/texttospeech/TextToSpeech";
 import { HiSpeakerWave, HiSpeakerXMark } from "react-icons/hi2";
+import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
+import { geminiComicStory } from "@/utils/chat/geminiComicStory";
 
 export default function Main() {
   const [speaking, setSpeaking] = useState(false);
@@ -83,7 +86,7 @@ export default function Main() {
 
   const showNextPageButton =
     hasAtLeastOnePage && hasNoPendingGeneration && hasStillMorePagesToGenerate;
-
+  const [story, setStory] = useState<string>("");
   const [storyCation, setStoryCaption] = useState<string>("");
   /*
   console.log("<Main>: " + JSON.stringify({
@@ -266,10 +269,39 @@ export default function Main() {
       */
     });
   }, [prompt, preset?.label, previousNbPanels, currentNbPanels, maxNbPanels]); // important: we need to react to preset changes too
+  const comicRef = useRef<HTMLDivElement>(null);
+  const downloadComic = () => {
+    const canvas = comicRef.current;
+
+    // Use html2canvas to capture the canvas element as an image
+    html2canvas(canvas).then((canvasImage) => {
+      const imgData = canvasImage.toDataURL("image/png");
+
+      // Create a PDF document
+      const pdf = new jsPDF("p", "mm", "a4");
+      const imgWidth = 210; // A4 width in mm
+      const imgHeight = (canvasImage.height * imgWidth) / canvasImage.width;
+
+      pdf.addImage(imgData, "PNG", 0, 0, imgWidth, imgHeight);
+      pdf.save("canvas.pdf");
+    });
+  };
 
   useEffect(() => {
+    console.log(captions, captions.length);
+
     setStoryCaption(captions.join("\n"));
-  }, [captions]);
+    captions.length != 0 &&
+      geminiComicStory(captions.join("\n"))
+        .then((res) => {
+          console.log(res);
+          setStory(res);
+        })
+        .catch((err) => {
+          console.log(err);
+          setStory("Story generation pending...");
+        });
+  }, [captions.length, captions]);
 
   return (
     <>
@@ -291,6 +323,7 @@ export default function Main() {
             )}
           >
             <div
+              ref={comicRef}
               className={cn(
                 `comic-page`,
                 `flex flex-col md:flex-row md:space-x-8 lg:space-x-12 xl:space-x-16 md:items-center md:justify-start`,
@@ -355,16 +388,12 @@ export default function Main() {
       {isFullStory && (
         <div className="fixed z-[999] bottom-20 right-5 p-3 h-[31rem] w-[19rem] bg-white rounded-lg shadow shadow-black">
           <div className="h-[85%] whitespace-pre-wrap overflow-y-scroll">
-            {storyCation.trim() === "" ? (
-              <div className="text-center text-stone-700">No story yet</div>
-            ) : (
-              storyCation
-            )}
+            {story}
           </div>
           <div
-            className="h-10 mt-2 z-50 px-4 py-2 gap-x-3 bg-stone-900 text-stone-50 hover:bg-stone-900/90 dark:bg-stone-50 dark:text-stone-900 dark:hover:bg-stone-50/90 inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-stone-400 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 dark:ring-offset-stone-950 dark:focus-visible:ring-stone-800 cursor-pointer"
+            className="h-10 select-none mt-2 z-50 px-4 py-2 gap-x-3 bg-stone-900 text-stone-50 hover:bg-stone-900/90 dark:bg-stone-50 dark:text-stone-900 dark:hover:bg-stone-50/90 inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-stone-400 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 dark:ring-offset-stone-950 dark:focus-visible:ring-stone-800 cursor-pointer"
             onClick={() => {
-              speak(storyCation);
+              speak(story);
             }}
           >
             <span>Read</span>
@@ -376,7 +405,7 @@ export default function Main() {
           </div>
         </div>
       )}
-      <div className="fixed z-[999] bottom-5 right-5 cursor-pointer">
+      <div className="fixed flex gap-5 z-[999] bottom-5 right-5 cursor-pointer">
         <div
           className="select-none h-10 z-[999] px-4 py-2 bg-stone-900 text-stone-50 hover:bg-stone-900/90 dark:bg-stone-50 dark:text-stone-900 dark:hover:bg-stone-50/90 inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-stone-400 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 dark:ring-offset-stone-950 dark:focus-visible:ring-stone-800 cursor-pointer"
           onClick={() => {
@@ -384,6 +413,14 @@ export default function Main() {
           }}
         >
           Full Story
+        </div>
+        <div
+          className="select-none h-10 z-[999] px-4 py-2 bg-stone-900 text-stone-50 hover:bg-stone-900/90 dark:bg-stone-50 dark:text-stone-900 dark:hover:bg-stone-50/90 inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-stone-400 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 dark:ring-offset-stone-950 dark:focus-visible:ring-stone-800 cursor-pointer"
+          onClick={() => {
+            downloadComic();
+          }}
+        >
+          Download
         </div>
       </div>
     </>
