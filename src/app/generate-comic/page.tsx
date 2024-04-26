@@ -84,6 +84,7 @@ export default function Main() {
   const showNextPageButton =
     hasAtLeastOnePage && hasNoPendingGeneration && hasStillMorePagesToGenerate;
 
+  const [storyCation, setStoryCaption] = useState<string>("");
   /*
   console.log("<Main>: " + JSON.stringify({
     currentNbPages,
@@ -182,6 +183,7 @@ export default function Main() {
         "ref.current:": ref.current,
       }, null, 2))
       */
+      // console.log(captions);
 
       for (
         let currentPanel = previousNbPanels;
@@ -201,6 +203,13 @@ export default function Main() {
             existingPanels: ref.current.existingPanels,
           });
           // console.log("LLM generated some new panels:", candidatePanels)
+          // console.log(
+          //   preset,
+          //   stylePrompt,
+          //   userStoryPrompt,
+          //   nbPanelsToGenerate,
+          //   maxNbPanels
+          // );
 
           ref.current.existingPanels.push(...candidatePanels);
           // console.log("ref.current.existingPanels.push(...candidatePanels) successful, now we have ref.current.existingPanels = ", ref.current.existingPanels)
@@ -257,6 +266,10 @@ export default function Main() {
       */
     });
   }, [prompt, preset?.label, previousNbPanels, currentNbPanels, maxNbPanels]); // important: we need to react to preset changes too
+
+  useEffect(() => {
+    setStoryCaption(captions.join("\n"));
+  }, [captions]);
 
   return (
     <>
@@ -341,48 +354,17 @@ export default function Main() {
       </Suspense>
       {isFullStory && (
         <div className="fixed z-[999] bottom-20 right-5 p-3 h-[31rem] w-[19rem] bg-white rounded-lg shadow shadow-black">
-          <div className="h-[85%] overflow-y-scroll">
-            {" "}
-            Lorem ipsum dolor sit, amet consectetur adipisicing elit. Laboriosam
-            vel eius fugit maiores quia recusandae molestiae, ut fuga debitis,
-            aut doloremque eaque aliquid excepturi dolore! Consectetur, sint?
-            Ipsa, numquam natus necessitatibus explicabo suscipit praesentium
-            nulla tempora quae quaerat iste, non ipsam, architecto fugit neque!
-            Libero, quis deserunt eos quia consequuntur eius neque numquam in
-            dolore perspiciatis quas commodi corrupti id sint est officiis, ipsa
-            ullam suscipit porro animi adipisci veniam! Laborum minima voluptas
-            reiciendis dignissimos consectetur nisi cupiditate dolore iure
-            facilis voluptate, deserunt eaque similique voluptates vitae illo,
-            sit eum officia magni hic dolorem repellat. Laboriosam reprehenderit
-            et illo vitae, quae impedit nemo veniam eligendi, excepturi
-            assumenda in ratione. Odit officia quibusdam delectus, voluptatibus
-            ad aliquid quasi expedita placeat quis illum blanditiis mollitia
-            maxime ipsum nisi debitis odio non molestiae temporibus repellat
-            ullam possimus praesentium reiciendis! Ipsam nam tempore quod hic
-            consequatur, a minus et. Quibusdam earum nesciunt expedita dolorum
-            temporibus numquam doloremque? Earum qui esse est hic aspernatur aut
-            optio, fuga vel cupiditate officia atque exercitationem laboriosam
-            impedit? Tenetur eius repellendus labore deserunt ad id. Consectetur
-            perferendis quia, facilis voluptatibus earum nam et velit, unde
-            ducimus perspiciatis nostrum illum modi reprehenderit ipsam porro,
-            fugiat est minima facere dicta provident itaque delectus accusamus
-            non. Molestiae minus delectus accusamus a nemo eos perferendis
-            ducimus repellendus aliquid expedita, excepturi soluta sunt aut
-            voluptatem. Ex expedita odit ut, nobis repudiandae est mollitia
-            neque molestias molestiae. Illum blanditiis aperiam, tempore,
-            quibusdam necessitatibus ipsam minima explicabo aut eius placeat
-            praesentium earum, ex maxime officia accusamus accusantium delectus
-            facere et? Fugiat quo nemo dignissimos illum! Optio sapiente
-            voluptates, similique tempore omnis quod, quam amet harum
-            necessitatibus minus laboriosam deleniti, ullam quaerat perferendis
-            animi voluptate doloremque ipsa temporibus odio sit repellendus cum
-            ipsam officia! Culpa possimus ullam adipisci et doloremque fugit
-            cumque quos, quisquam recusandae amet unde?
+          <div className="h-[85%] whitespace-pre-wrap overflow-y-scroll">
+            {storyCation.trim() === "" ? (
+              <div className="text-center text-stone-700">No story yet</div>
+            ) : (
+              storyCation
+            )}
           </div>
           <div
             className="h-10 mt-2 z-50 px-4 py-2 gap-x-3 bg-stone-900 text-stone-50 hover:bg-stone-900/90 dark:bg-stone-50 dark:text-stone-900 dark:hover:bg-stone-50/90 inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-stone-400 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 dark:ring-offset-stone-950 dark:focus-visible:ring-stone-800 cursor-pointer"
             onClick={() => {
-              speak("how are you bro iam fine");
+              speak(storyCation);
             }}
           >
             <span>Read</span>

@@ -33,6 +33,8 @@ export const getStoryContinuation = async ({
       existingPanels,
     });
 
+    console.log("prompt:", prompt);
+
     // console.log("LLM responded with panelCandidates:", panelCandidates)
 
     // we clean the output from the LLM
