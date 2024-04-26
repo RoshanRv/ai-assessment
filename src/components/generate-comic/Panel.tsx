@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState, useTransition } from "react";
 import { RxReload, RxPencil2 } from "react-icons/rx";
+import { HiSpeakerWave, HiSpeakerXMark } from "react-icons/hi2";
 import { useLocalStorage } from "usehooks-ts";
 import { useStore } from "@/store/useComic";
 import { cn } from "@/lib/generate-comic/cn";
@@ -13,6 +14,7 @@ import { EditModal } from "./EditModal";
 import { Progress } from "./Progress";
 import { getRender, newRender } from "@/lib/generate-comic/render";
 import { getInitialRenderedScene } from "@/lib/generate-comic/getInitialRenderedScene";
+import { speak, useSpeechSynthesis } from "@/utils/texttospeech/TextToSpeech";
 export function Panel({
   page,
   nbPanels,
@@ -36,6 +38,9 @@ export function Panel({
 }) {
   // index of the panel in the whole app
   const panelIndex = page * nbPanels + panel;
+
+  const [speaking, setSpeaking] = useState(false);
+  const { speak, stopSpeaking } = useSpeechSynthesis(speaking, setSpeaking);
 
   // the panel Id must be unique across all pages
   const panelId = `${panelIndex}`;
@@ -382,8 +387,7 @@ export function Panel({
           frameClassName,
           `flex flex-col items-center justify-center`,
           className
-        )}
-      >
+        )}>
         <Progress isLoading />
       </div>
     );
@@ -400,8 +404,7 @@ export function Panel({
         className
       )}
       onMouseEnter={() => setMouseOver(true)}
-      onMouseLeave={() => setMouseOver(false)}
-    >
+      onMouseLeave={() => setMouseOver(false)}>
       {prompt && rendered.assetUrl && caption ? (
         <Bubble onChange={handleSaveCaption}>{caption}</Bubble>
       ) : null}
@@ -412,8 +415,7 @@ export function Panel({
           `flex justify-between`,
           `p-2 space-x-2`,
           `print:hidden`
-        )}
-      >
+        )}>
         <div
           onClick={hasSucceededOrFailed ? handleReload : undefined}
           className={cn(
@@ -427,8 +429,7 @@ export function Panel({
             mouseOver && hasSucceededOrFailed
               ? `scale-95 hover:scale-100 hover:opacity-100`
               : `scale-0`
-          )}
-        >
+          )}>
           <RxReload className="w-3 h-3 md:w-4 md:h-4 lg:w-5 lg:h-5" />
           <span
             className={cn(
@@ -437,41 +438,69 @@ export function Panel({
                 : zoomLevel > 40
                 ? `text-2xs md:text-xs lg:text-sm`
                 : `text-3xs md:text-2xs lg:text-xs`
-            )}
-          >
+            )}>
             Redraw
           </span>
         </div>
         <EditModal
           isEnabled={hasSucceededOrFailed}
           existingPrompt={prompt}
-          onSave={handleSavePrompt}
-        >
-          <div
-            className={cn(
-              `bg-stone-100 rounded-lg`,
-              `flex flex-row space-x-2 items-center`,
-              `py-1 px-3 md:py-2 md:px-3 cursor-pointer`,
-              `transition-all duration-200 ease-in-out`,
-              hasSucceededOrFailed ? "opacity-95" : "opacity-50",
-              mouseOver && hasSucceededOrFailed
-                ? `scale-95 hover:scale-100 hover:opacity-100`
-                : `scale-0`
-            )}
-          >
-            <RxPencil2 className="w-3 h-3 md:w-4 md:h-4 lg:w-5 lg:h-5" />
-            <span
+          onSave={handleSavePrompt}>
+          <>
+            <div
               className={cn(
-                zoomLevel > 80
-                  ? `text-xs md:text-sm lg:text-base`
-                  : zoomLevel > 40
-                  ? `text-2xs md:text-xs lg:text-sm`
-                  : `text-3xs md:text-2xs lg:text-xs`
+                `bg-stone-100 rounded-lg`,
+                `flex flex-row space-x-2 items-center`,
+                `py-1 px-3 md:py-2 md:px-3 cursor-pointer`,
+                `transition-all duration-200 ease-in-out`,
+                hasSucceededOrFailed ? "opacity-95" : "opacity-50",
+                mouseOver && hasSucceededOrFailed
+                  ? `scale-95 hover:scale-100 hover:opacity-100`
+                  : `scale-0`
+              )}>
+              <RxPencil2 className="w-3 h-3 md:w-4 md:h-4 lg:w-5 lg:h-5" />
+              <span
+                className={cn(
+                  zoomLevel > 80
+                    ? `text-xs md:text-sm lg:text-base`
+                    : zoomLevel > 40
+                    ? `text-2xs md:text-xs lg:text-sm`
+                    : `text-3xs md:text-2xs lg:text-xs`
+                )}>
+                Edit
+              </span>
+            </div>
+            <div
+              onClick={() => {
+                speak(caption);
+              }}
+              className={cn(
+                `bg-stone-100 rounded-lg`,
+                `flex flex-row space-x-2 items-center`,
+                `py-1 px-3 md:py-2 md:px-3 cursor-pointer`,
+                `transition-all duration-200 ease-in-out`,
+                hasSucceededOrFailed ? "opacity-95" : "opacity-50",
+                mouseOver && hasSucceededOrFailed
+                  ? `scale-95 hover:scale-100 hover:opacity-100`
+                  : `scale-0`
+              )}>
+              {!speaking ? (
+                <HiSpeakerXMark className="w-3 h-3 md:w-4 md:h-4 lg:w-5 lg:h-5" />
+              ) : (
+                <HiSpeakerWave className="w-3 h-3 md:w-4 md:h-4 lg:w-5 lg:h-5" />
               )}
-            >
-              Edit
-            </span>
-          </div>
+              <span
+                className={cn(
+                  zoomLevel > 80
+                    ? `text-xs md:text-sm lg:text-base`
+                    : zoomLevel > 40
+                    ? `text-2xs md:text-xs lg:text-sm`
+                    : `text-3xs md:text-2xs lg:text-xs`
+                )}>
+                sound
+              </span>
+            </div>
+          </>
         </EditModal>
       </div>
 
