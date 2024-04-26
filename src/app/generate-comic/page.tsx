@@ -79,6 +79,7 @@ export default function Main() {
   const hasNoPendingGeneration = numberOfPendingGenerations === 0;
 
   const hasStillMorePagesToGenerate = currentNbPages < maxNbPages;
+  const [isFullStory, setIsFullStory] = useState(false);
 
   const showNextPageButton =
     hasAtLeastOnePage && hasNoPendingGeneration && hasStillMorePagesToGenerate;
@@ -268,12 +269,14 @@ export default function Main() {
             zoomLevel > 105 ? `px-0` : `pl-1 pr-8 md:pl-16 md:pr-16`,
             `print:pt-0 print:px-0 print:pl-0 print:pr-0`,
             fonts.actionman.className
-          )}>
+          )}
+        >
           <div
             className={cn(
               `flex flex-col w-full`,
               zoomLevel > 105 ? `items-start` : `items-center`
-            )}>
+            )}
+          >
             <div
               className={cn(
                 `comic-page`,
@@ -282,7 +285,8 @@ export default function Main() {
               )}
               style={{
                 width: `${zoomLevel}%`,
-              }}>
+              }}
+            >
               {Array(currentNbPages)
                 .fill(0)
                 .map((_, i) => (
@@ -297,7 +301,8 @@ export default function Main() {
                   <Button
                     onClick={() => {
                       setCurrentNbPages(currentNbPages + 1);
-                    }}>
+                    }}
+                  >
                     Add page {currentNbPages + 1} 👀
                   </Button>
                 </div>
@@ -318,79 +323,85 @@ export default function Main() {
               ? `bg-zinc-50/30 backdrop-blur-md`
               : `bg-zinc-50/0 backdrop-blur-none pointer-events-none`,
             fonts.actionman.className
-          )}>
+          )}
+        >
           <div
             className={cn(
               `text-center text-xl text-stone-700 w-[70%]`,
               isGeneratingStory ? `` : `scale-0 opacity-0`,
               `transition-all duration-300 ease-in-out`
-            )}>
+            )}
+          >
             <div className="bg-white p-3 px-10 border-2 border-priClr boxShadow font-semibold w-max mx-auto ">
               <FaGear className="animate-spin text-3xl w-max mx-auto " />
               <h1 className="text-xl my-3">Generating...</h1>
             </div>
           </div>
-
-          <div className="fixed z-[999] bottom-5 right-5 cursor-pointer">
-            <div
-              className="h-10 z-[999] px-4 py-2 bg-stone-900 text-stone-50 hover:bg-stone-900/90 dark:bg-stone-50 dark:text-stone-900 dark:hover:bg-stone-50/90 inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-stone-400 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 dark:ring-offset-stone-950 dark:focus-visible:ring-stone-800 cursor-pointer"
-              onClick={() => {
-                console.log("click");
-              }}>
-              Full Story
-            </div>
-          </div>
         </div>
       </Suspense>
-      <div className="fixed z-[999] bottom-20 right-5 p-3 h-[31rem] w-[19rem] bg-white rounded-lg shadow shadow-black">
-        <div className="h-[85%] overflow-y-scroll">
-          {" "}
-          Lorem ipsum dolor sit, amet consectetur adipisicing elit. Laboriosam
-          vel eius fugit maiores quia recusandae molestiae, ut fuga debitis, aut
-          doloremque eaque aliquid excepturi dolore! Consectetur, sint? Ipsa,
-          numquam natus necessitatibus explicabo suscipit praesentium nulla
-          tempora quae quaerat iste, non ipsam, architecto fugit neque! Libero,
-          quis deserunt eos quia consequuntur eius neque numquam in dolore
-          perspiciatis quas commodi corrupti id sint est officiis, ipsa ullam
-          suscipit porro animi adipisci veniam! Laborum minima voluptas
-          reiciendis dignissimos consectetur nisi cupiditate dolore iure facilis
-          voluptate, deserunt eaque similique voluptates vitae illo, sit eum
-          officia magni hic dolorem repellat. Laboriosam reprehenderit et illo
-          vitae, quae impedit nemo veniam eligendi, excepturi assumenda in
-          ratione. Odit officia quibusdam delectus, voluptatibus ad aliquid
-          quasi expedita placeat quis illum blanditiis mollitia maxime ipsum
-          nisi debitis odio non molestiae temporibus repellat ullam possimus
-          praesentium reiciendis! Ipsam nam tempore quod hic consequatur, a
-          minus et. Quibusdam earum nesciunt expedita dolorum temporibus numquam
-          doloremque? Earum qui esse est hic aspernatur aut optio, fuga vel
-          cupiditate officia atque exercitationem laboriosam impedit? Tenetur
-          eius repellendus labore deserunt ad id. Consectetur perferendis quia,
-          facilis voluptatibus earum nam et velit, unde ducimus perspiciatis
-          nostrum illum modi reprehenderit ipsam porro, fugiat est minima facere
-          dicta provident itaque delectus accusamus non. Molestiae minus
-          delectus accusamus a nemo eos perferendis ducimus repellendus aliquid
-          expedita, excepturi soluta sunt aut voluptatem. Ex expedita odit ut,
-          nobis repudiandae est mollitia neque molestias molestiae. Illum
-          blanditiis aperiam, tempore, quibusdam necessitatibus ipsam minima
-          explicabo aut eius placeat praesentium earum, ex maxime officia
-          accusamus accusantium delectus facere et? Fugiat quo nemo dignissimos
-          illum! Optio sapiente voluptates, similique tempore omnis quod, quam
-          amet harum necessitatibus minus laboriosam deleniti, ullam quaerat
-          perferendis animi voluptate doloremque ipsa temporibus odio sit
-          repellendus cum ipsam officia! Culpa possimus ullam adipisci et
-          doloremque fugit cumque quos, quisquam recusandae amet unde?
+      {isFullStory && (
+        <div className="fixed z-[999] bottom-20 right-5 p-3 h-[31rem] w-[19rem] bg-white rounded-lg shadow shadow-black">
+          <div className="h-[85%] overflow-y-scroll">
+            {" "}
+            Lorem ipsum dolor sit, amet consectetur adipisicing elit. Laboriosam
+            vel eius fugit maiores quia recusandae molestiae, ut fuga debitis,
+            aut doloremque eaque aliquid excepturi dolore! Consectetur, sint?
+            Ipsa, numquam natus necessitatibus explicabo suscipit praesentium
+            nulla tempora quae quaerat iste, non ipsam, architecto fugit neque!
+            Libero, quis deserunt eos quia consequuntur eius neque numquam in
+            dolore perspiciatis quas commodi corrupti id sint est officiis, ipsa
+            ullam suscipit porro animi adipisci veniam! Laborum minima voluptas
+            reiciendis dignissimos consectetur nisi cupiditate dolore iure
+            facilis voluptate, deserunt eaque similique voluptates vitae illo,
+            sit eum officia magni hic dolorem repellat. Laboriosam reprehenderit
+            et illo vitae, quae impedit nemo veniam eligendi, excepturi
+            assumenda in ratione. Odit officia quibusdam delectus, voluptatibus
+            ad aliquid quasi expedita placeat quis illum blanditiis mollitia
+            maxime ipsum nisi debitis odio non molestiae temporibus repellat
+            ullam possimus praesentium reiciendis! Ipsam nam tempore quod hic
+            consequatur, a minus et. Quibusdam earum nesciunt expedita dolorum
+            temporibus numquam doloremque? Earum qui esse est hic aspernatur aut
+            optio, fuga vel cupiditate officia atque exercitationem laboriosam
+            impedit? Tenetur eius repellendus labore deserunt ad id. Consectetur
+            perferendis quia, facilis voluptatibus earum nam et velit, unde
+            ducimus perspiciatis nostrum illum modi reprehenderit ipsam porro,
+            fugiat est minima facere dicta provident itaque delectus accusamus
+            non. Molestiae minus delectus accusamus a nemo eos perferendis
+            ducimus repellendus aliquid expedita, excepturi soluta sunt aut
+            voluptatem. Ex expedita odit ut, nobis repudiandae est mollitia
+            neque molestias molestiae. Illum blanditiis aperiam, tempore,
+            quibusdam necessitatibus ipsam minima explicabo aut eius placeat
+            praesentium earum, ex maxime officia accusamus accusantium delectus
+            facere et? Fugiat quo nemo dignissimos illum! Optio sapiente
+            voluptates, similique tempore omnis quod, quam amet harum
+            necessitatibus minus laboriosam deleniti, ullam quaerat perferendis
+            animi voluptate doloremque ipsa temporibus odio sit repellendus cum
+            ipsam officia! Culpa possimus ullam adipisci et doloremque fugit
+            cumque quos, quisquam recusandae amet unde?
+          </div>
+          <div
+            className="h-10 mt-2 z-50 px-4 py-2 gap-x-3 bg-stone-900 text-stone-50 hover:bg-stone-900/90 dark:bg-stone-50 dark:text-stone-900 dark:hover:bg-stone-50/90 inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-stone-400 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 dark:ring-offset-stone-950 dark:focus-visible:ring-stone-800 cursor-pointer"
+            onClick={() => {
+              speak("how are you bro iam fine");
+            }}
+          >
+            <span>Read</span>
+            {!speaking ? (
+              <HiSpeakerXMark className="w-3 h-3 md:w-4 md:h-4 lg:w-5 lg:h-5" />
+            ) : (
+              <HiSpeakerWave className="w-3 h-3 md:w-4 md:h-4 lg:w-5 lg:h-5" />
+            )}
+          </div>
         </div>
+      )}
+      <div className="fixed z-[999] bottom-5 right-5 cursor-pointer">
         <div
-          className="h-10 mt-2 z-50 px-4 py-2 gap-x-3 bg-stone-900 text-stone-50 hover:bg-stone-900/90 dark:bg-stone-50 dark:text-stone-900 dark:hover:bg-stone-50/90 inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-stone-400 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 dark:ring-offset-stone-950 dark:focus-visible:ring-stone-800 cursor-pointer"
+          className="select-none h-10 z-[999] px-4 py-2 bg-stone-900 text-stone-50 hover:bg-stone-900/90 dark:bg-stone-50 dark:text-stone-900 dark:hover:bg-stone-50/90 inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-stone-400 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 dark:ring-offset-stone-950 dark:focus-visible:ring-stone-800 cursor-pointer"
           onClick={() => {
-            speak("how are you bro iam fine");
-          }}>
-          <span>Read</span>
-          {!speaking ? (
-            <HiSpeakerXMark className="w-3 h-3 md:w-4 md:h-4 lg:w-5 lg:h-5" />
-          ) : (
-            <HiSpeakerWave className="w-3 h-3 md:w-4 md:h-4 lg:w-5 lg:h-5" />
-          )}
+            setIsFullStory((prev) => !prev);
+          }}
+        >
+          Full Story
         </div>
       </div>
     </>

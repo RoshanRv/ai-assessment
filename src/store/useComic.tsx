@@ -40,7 +40,8 @@ export const useStore = create<{
   panelGenerationStatus: Record<number, boolean>;
   isGeneratingText: boolean;
   atLeastOnePanelIsBusy: boolean;
-
+  allCaptions: string[];
+  setAllCaptions: (allCaptions: string[]) => void;
   setCurrentNbPanelsPerPage: (currentNbPanelsPerPage: number) => void;
   setMaxNbPanelsPerPage: (maxNbPanelsPerPage: number) => void;
   setCurrentNbPages: (currentNbPages: number) => void;
@@ -82,6 +83,10 @@ export const useStore = create<{
     layoutName: LayoutName
   ) => void;
 }>((set, get) => ({
+  allCaptions: [],
+  setAllCaptions: (allCaptions: string[]) => {
+    set({ allCaptions });
+  },
   prompt: "",
   font: "actionman",
   preset: getPreset(defaultPreset),

@@ -5,6 +5,7 @@ import { dirtyGeneratedPanelCleaner } from "@/lib/generate-comic/dirtyGeneratedP
 import { dirtyGeneratedPanelsParser } from "@/lib/generate-comic/dirtyGeneratedPanelsParser";
 import { Preset } from "../presets";
 import { sleep } from "../sleep";
+import { useStore } from "../../../store/useComic";
 
 export const predictNextPanels = async ({
   preset,
@@ -19,6 +20,9 @@ export const predictNextPanels = async ({
   maxNbPanels: number;
   existingPanels: GeneratedPanel[];
 }): Promise<GeneratedPanel[]> => {
+  // const allCaptions = useStore((s) => s.allCaptions);
+  // const { allCaptions, setAllCaptions } = useStore();
+
   // console.log("predictNextPanels: ", { prompt, nbPanelsToGenerate })
   // throw new Error("Planned maintenance")
 
