@@ -5,6 +5,7 @@ import useToast from "@/store/useToast";
 import useUser from "@/store/useUser";
 import { gemini } from "@/utils/chat/geminiAPI";
 import { geminiFeedback } from "@/utils/chat/geminiFeedbackAPI";
+import { useSpeechSynthesis } from "@/utils/texttospeech/TextToSpeech";
 import axios from "axios";
 import Image from "next/image";
 import Link from "next/link";
@@ -12,6 +13,7 @@ import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { BiChevronLeft } from "react-icons/bi";
 import { FaGear } from "react-icons/fa6";
+import { HiSpeakerWave, HiSpeakerXMark } from "react-icons/hi2";
 import { v4 } from "uuid";
 
 const trueOrFalse = {
@@ -98,6 +100,9 @@ const Quizz = ({ page }: { page: string }) => {
   const [ans, setAns] = useState("");
   const [isSubmit, setIsSubmit] = useState(false);
   const [uploadStatus, setUploadStatus] = useState(false);
+
+  const [speaking, setSpeaking] = useState(false);
+  const { speak, stopSpeaking } = useSpeechSynthesis(speaking, setSpeaking);
 
   const [feedback, setFeedback] = useState<null | {
     areas_to_improve: string[];
@@ -443,23 +448,38 @@ const Quizz = ({ page }: { page: string }) => {
           {/* Ques/ Opt... */}
           {!loading && questions.length ? (
             <div className="w-1/2 mx-auto flex flex-col gap-8">
-              {/* Ques */}
-              <input
-                disabled={!isEdit}
-                onChange={(e) => {
-                  setQuestions((prev) => {
-                    const newQn = [...prev];
-                    newQn[currQnIndex].question = e.target.value;
-                    return newQn;
-                  });
-                }}
-                value={questions[currQnIndex]?.question}
-                className={`${
-                  isEdit ? "!cursor-text" : ""
-                } bg-priClr boxShadow w-full text-wrap whitespace-break-spaces  p-4 text-white border-2  border-black   font-bold text-2xl `}
-              >
-                {/* {`${questions[currQnIndex]?.question} ?`} */}
-              </input>
+              <div className="flex gap-3 items-center ">
+                <button
+                  onClick={() => {
+                    speak(`Question: ${questions[currQnIndex].question}
+                  and the Options are ${questions[currQnIndex].options[0]}, ${questions[currQnIndex].options[1]}, ${questions[currQnIndex].options[2]}, ${questions[currQnIndex].options[3]},
+                  `);
+                  }}
+                >
+                  {speaking ? (
+                    <HiSpeakerXMark className="text-2xl" />
+                  ) : (
+                    <HiSpeakerWave className="text-2xl" />
+                  )}
+                </button>
+                {/* Ques */}
+                <input
+                  disabled={!isEdit}
+                  onChange={(e) => {
+                    setQuestions((prev) => {
+                      const newQn = [...prev];
+                      newQn[currQnIndex].question = e.target.value;
+                      return newQn;
+                    });
+                  }}
+                  value={questions[currQnIndex]?.question}
+                  className={`${
+                    isEdit ? "!cursor-text" : ""
+                  } bg-priClr boxShadow w-full text-wrap whitespace-break-spaces  p-4 text-white border-2  border-black   font-bold text-2xl `}
+                >
+                  {/* {`${questions[currQnIndex]?.question} ?`} */}
+                </input>
+              </div>
               {/* Opts */}
               <div className="grid grid-cols-2 gap-4">
                 {questions[currQnIndex].options?.map((opt, i) =>
@@ -498,17 +518,18 @@ const Quizz = ({ page }: { page: string }) => {
                         ></input>
                       </div>
                     ) : (
-                      <button
+                      <div
                         onClick={() => !isSubmit && setAns(opt.trim())}
                         className={` p-4 text-xl text-left font-bold shadow-md ${
                           ans === opt
                             ? "bg-priClr boxShadow text-white border-2 border-black boxShadow"
                             : "bg-white hover:bg-gray-100 border-2 border-priClr text-priClr"
-                        }     hover:scale-95 transition-all `}
+                        }     hover:scale-95 transition-all flex flex-col gap-2 `}
                         key={i}
                       >
-                        {opt}
-                      </button>
+                        <OptImage key={opt} input={`${opt} from ${ques}`} />
+                        <p className="text-center">{opt}</p>
+                      </div>
                     )
                   ) : (
                     <></>
@@ -776,3 +797,44 @@ const Quizz = ({ page }: { page: string }) => {
 };
 
 export default Quizz;
+
+const OptImage = ({ input }: { input: string }) => {
+  const [img, setImg] = useState<Blob | undefined>(undefined);
+
+  const getImage = async () => {
+    const response = await fetch(
+      "https://api-inference.huggingface.co/models/stabilityai/stable-diffusion-xl-base-1.0",
+      {
+        headers: {
+          Authorization: "Bearer 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",
+        },
+        method: "POST",
+        body: JSON.stringify({ inputs: input }),
+      }
+    );
+    const result = await response.blob();
+    setImg(result);
+    // return result;
+  };
+
+  useEffect(() => {
+    getImage();
+  }, []);
+
+  return (
+    <>
+      {img ? (
+        <div className="relative w-full h-36 object-cover mx-auto rounded-lg overflow-hidden">
+          <Image
+            alt="Image"
+            className="object-cover "
+            fill
+            src={URL.createObjectURL(new File([img], "image"))}
+          />
+        </div>
+      ) : (
+        <></>
+      )}
+    </>
+  );
+};

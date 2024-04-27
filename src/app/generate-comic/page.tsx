@@ -274,36 +274,37 @@ export default function Main() {
     const canvas = comicRef.current;
 
     // Use html2canvas to capture the canvas element as an image
-    html2canvas(canvas).then((canvasImage) => {
-      const imgData = canvasImage.toDataURL("image/png");
+    canvas &&
+      html2canvas(canvas).then((canvasImage) => {
+        const imgData = canvasImage.toDataURL("image/png");
 
-      // Create a PDF document
-      const pdf = new jsPDF("p", "mm", "a4");
-      const imgWidth = 210; // A4 width in mm
-      const imgHeight = (canvasImage.height * imgWidth) / canvasImage.width;
+        // Create a PDF document
+        const pdf = new jsPDF("p", "mm", "a4");
+        const imgWidth = 210; // A4 width in mm
+        const imgHeight = (canvasImage.height * imgWidth) / canvasImage.width;
 
-      pdf.addImage(imgData, "PNG", 0, 0, imgWidth, imgHeight);
-      const description = story; // Example overflow description
-      const textX = 10; // X position of the text
-      let textY = imgHeight + 30; // Y position of the text
-      const maxWidth = imgWidth - 20; // Maximum width of the text
-      const lineHeight = 9; // Line height of the text
+        pdf.addImage(imgData, "PNG", 0, 0, imgWidth, imgHeight);
+        const description = story; // Example overflow description
+        const textX = 10; // X position of the text
+        let textY = imgHeight + 30; // Y position of the text
+        const maxWidth = imgWidth - 20; // Maximum width of the text
+        const lineHeight = 9; // Line height of the text
 
-      // Split the description into lines to check for overflow
-      const lines = pdf.splitTextToSize(description, maxWidth);
+        // Split the description into lines to check for overflow
+        const lines = pdf.splitTextToSize(description, maxWidth);
 
-      // Check if the description overflows beyond the current page
-      const remainingSpace = pdf.internal.pageSize.height - textY;
-      if (lines.length * lineHeight > remainingSpace) {
-        // Add new page
-        pdf.addPage();
-        textY = 30; // Reset Y position
-      }
+        // Check if the description overflows beyond the current page
+        const remainingSpace = pdf.internal.pageSize.height - textY;
+        if (lines.length * lineHeight > remainingSpace) {
+          // Add new page
+          pdf.addPage();
+          textY = 30; // Reset Y position
+        }
 
-      pdf.text(lines, textX, textY, { maxWidth, lineHeight });
+        pdf.text(lines, textX, textY, { maxWidth, lineHeight });
 
-      pdf.save("canvas.pdf");
-    });
+        pdf.save("canvas.pdf");
+      });
   };
 
   useEffect(() => {
