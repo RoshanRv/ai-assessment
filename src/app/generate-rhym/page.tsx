@@ -2,15 +2,33 @@
 
 import axios from "axios";
 import { ChevronLeft, Link } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { BiChevronLeft } from "react-icons/bi";
 
-const SUNO = "48gVKh3MJ5HzLgjvW5D/yfVcDu4646XN";
+const SUNO = "0olSKccoLrQQgDR+OI9AssB28wKOyOvV  ";
+const SUNO2 = "NlSzxywAxOfAO48Z0V4wQCVaKyxNUddi  ";
 
 const GenerateRhym = () => {
+  const router = useRouter();
   const [input, setInput] = useState("");
   const [generatedIds, setGeneratedIds] = useState("");
   const [url, setUrl] = useState("");
+
+  const [old, setOlds] = useState([
+    {
+      title: "2 Tables",
+      url: "https://cdn1.suno.ai/f72311e9-cc30-447b-ad45-28ef9267ecdb.mp3",
+    },
+    {
+      title: "5 Tables",
+      url: "https://cdn1.suno.ai/33462f42-379e-4758-9184-033acdd509e3.mp3",
+    },
+    {
+      title: "Periodic Table from 1 - 10",
+      url: "https://audiopipe.suno.ai/?item_id=fde1e2bc-9b4f-4a4c-af83-231ce31758f2",
+    },
+  ]);
 
   const handleGenerateSong = async () => {
     try {
@@ -63,9 +81,10 @@ const GenerateRhym = () => {
   };
 
   return (
-    <main className="p-5 flex flex-col gap-2">
+    <main className="p-5 flex flex-col gap-2  bg min-h-screen ">
       <div className="flex gap-4 items-center ">
         <div
+          onClick={() => router.push("/dashboard")}
           // href={"/dashboard"}
           className="bg-priClr  text-white capitalize border-[3px] border-black boxShadow flex items-center gap-2 px-3 py-2 rounde-md shadow-black shadow-sm font-semibold"
         >
@@ -103,7 +122,9 @@ const GenerateRhym = () => {
       <div>
         {generatedIds && (
           <div className="items-center flex gap-4">
-            <p className="text-xl p-3 boxShadow">{generatedIds}</p>
+            <p className="text-xl p-3 boxShadow bg-white border-2 border-priClr">
+              {generatedIds}
+            </p>
             <button
               onClick={() => {
                 getSong();
@@ -122,6 +143,23 @@ const GenerateRhym = () => {
           Your browser does not support the audio element.
         </audio>
       )}
+      {/* // OLD */}
+      {/* Prv Rhyms */}
+      <h3 className="text-xl font-semibold py-6">Previous Rhyms</h3>
+      <div className="grid grid-cols-3 gap-10 items-center ">
+        {old.map((ol) => (
+          <div
+            key={ol.url}
+            className="p-4 boxShadow flex  flex-col gap-4 bg-white border-2 border-priClr"
+          >
+            <h4 className="text-lg font-semibold">{ol.title}</h4>
+            <audio controls className="mx-auto mt-5">
+              <source src={ol.url} />
+              Your browser does not support the audio element.
+            </audio>
+          </div>
+        ))}
+      </div>
     </main>
   );
 };
