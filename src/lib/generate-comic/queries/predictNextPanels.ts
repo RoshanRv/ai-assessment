@@ -6,6 +6,7 @@ import { dirtyGeneratedPanelsParser } from "@/lib/generate-comic/dirtyGeneratedP
 import { Preset } from "../presets";
 import { sleep } from "../sleep";
 import { useStore } from "../../../store/useComic";
+import { useCaption } from "@/store/useCaption";
 
 export const predictNextPanels = async ({
   preset,
@@ -22,6 +23,7 @@ export const predictNextPanels = async ({
 }): Promise<GeneratedPanel[]> => {
   // const allCaptions = useStore((s) => s.allCaptions);
   // const { allCaptions, setAllCaptions } = useStore();
+  // const { allCaptions, setAllCaptions } = useCaption();
 
   // console.log("predictNextPanels: ", { prompt, nbPanelsToGenerate })
   // throw new Error("Planned maintenance")
@@ -52,7 +54,7 @@ export const predictNextPanels = async ({
           `You are a writer specialized in ${preset.llmPrompt}`,
           `If the student provides a specific topic, your task is to create a story that explains the topic clearly from scratch, as if narrating to a 5-year-old child. The story should introduce and explain the concept in a simple and understandable manner.`,
           `Please provide detailed drawing instructions and short (2-3 sentences long) speech captions for the ${firstNextOrLast} ${nbPanelsToGenerate} panels (out of ${maxNbPanels} in total) of a new story, but keep it open-ended (it will be continued and expanded later). Please make sure each of those ${nbPanelsToGenerate} panels include info about character gender, age, origin, clothes, colors, location, lights, etc. Only generate those ${nbPanelsToGenerate} panels, but take into account the fact the panels are part of a longer story (${maxNbPanels} panels long).\`and the Ensure the content is clear, simple, and non-harmful, aimed at educating students about the chosen topic.`,
-          `Give your response as a VALID JSON array like this: \`Array<{ panel: number; instructions: string; caption: string; }>\`. Be brief and straight to the point, avoiding unnecessary comments.`,
+          `Give your response as a VALID JSON array like this: \`Array<{ panel: number; instructions: string; caption: string;entireStory:string }>\`. Be brief and straight to the point, avoiding unnecessary comments.`,
           `Be brief in the instructions and narrative captions of those ${nbPanelsToGenerate} panels, don't add your own comments. The captions must be Educative, smart, understandable. Be straight to the point, and never reply things like "Sure, I can.." etc. Reply using valid JSON!! Important: Write valid JSON!`,
         ]
           .filter((item) => item)
