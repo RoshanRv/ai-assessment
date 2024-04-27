@@ -274,17 +274,18 @@ export default function Main() {
     const canvas = comicRef.current;
 
     // Use html2canvas to capture the canvas element as an image
-    html2canvas(canvas).then((canvasImage) => {
-      const imgData = canvasImage.toDataURL("image/png");
+    canvas &&
+      html2canvas(canvas).then((canvasImage) => {
+        const imgData = canvasImage.toDataURL("image/png");
 
-      // Create a PDF document
-      const pdf = new jsPDF("p", "mm", "a4");
-      const imgWidth = 210; // A4 width in mm
-      const imgHeight = (canvasImage.height * imgWidth) / canvasImage.width;
+        // Create a PDF document
+        const pdf = new jsPDF("p", "mm", "a4");
+        const imgWidth = 210; // A4 width in mm
+        const imgHeight = (canvasImage.height * imgWidth) / canvasImage.width;
 
-      pdf.addImage(imgData, "PNG", 0, 0, imgWidth, imgHeight);
-      pdf.save("canvas.pdf");
-    });
+        pdf.addImage(imgData, "PNG", 0, 0, imgWidth, imgHeight);
+        pdf.save("canvas.pdf");
+      });
   };
 
   useEffect(() => {
