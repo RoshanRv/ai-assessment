@@ -52,6 +52,8 @@ const GenerateRhym = () => {
 
       if (data.msg === "success") {
         const url = data.data?.audio_url;
+        console.log(url);
+
         const prompt = data.data?.meta_prompt;
         url && setUrl(url);
       }
@@ -115,9 +117,10 @@ const GenerateRhym = () => {
       </div>
       {/* URL */}
       {url && (
-        <input type="audio">
-          <source src="url" />
-        </input>
+        <audio controls className="mx-auto mt-5">
+          <source src={url} type="audio/mpeg" />
+          Your browser does not support the audio element.
+        </audio>
       )}
     </main>
   );
