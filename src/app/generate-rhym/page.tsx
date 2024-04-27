@@ -6,8 +6,9 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { BiChevronLeft } from "react-icons/bi";
 
-const SUNO = "0olSKccoLrQQgDR+OI9AssB28wKOyOvV  ";
-const SUNO2 = "NlSzxywAxOfAO48Z0V4wQCVaKyxNUddi  ";
+const SUNO = "DJLSkR7Hft7t4y3OuQiklIxB9Nfa10w";
+const SUNO1 = "0olSKccoLrQQgDR+OI9AssB28wKOyOvV";
+const SUNO2 = "NlSzxywAxOfAO48Z0V4wQCVaKyxNUddi";
 
 const GenerateRhym = () => {
   const router = useRouter();
