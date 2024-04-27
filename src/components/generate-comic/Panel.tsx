@@ -14,7 +14,7 @@ import { EditModal } from "./EditModal";
 import { Progress } from "./Progress";
 import { getRender, newRender } from "@/lib/generate-comic/render";
 import { getInitialRenderedScene } from "@/lib/generate-comic/getInitialRenderedScene";
-import { speak, useSpeechSynthesis } from "@/utils/texttospeech/TextToSpeech";
+import { useSpeechSynthesis } from "@/utils/texttospeech/TextToSpeech";
 export function Panel({
   page,
   nbPanels,
@@ -387,7 +387,8 @@ export function Panel({
           frameClassName,
           `flex flex-col items-center justify-center`,
           className
-        )}>
+        )}
+      >
         <Progress isLoading />
       </div>
     );
@@ -404,7 +405,8 @@ export function Panel({
         className
       )}
       onMouseEnter={() => setMouseOver(true)}
-      onMouseLeave={() => setMouseOver(false)}>
+      onMouseLeave={() => setMouseOver(false)}
+    >
       {prompt && rendered.assetUrl && caption ? (
         <Bubble onChange={handleSaveCaption}>{caption}</Bubble>
       ) : null}
@@ -415,7 +417,8 @@ export function Panel({
           `flex justify-between`,
           `p-2 space-x-2`,
           `print:hidden`
-        )}>
+        )}
+      >
         <div
           onClick={hasSucceededOrFailed ? handleReload : undefined}
           className={cn(
@@ -429,7 +432,8 @@ export function Panel({
             mouseOver && hasSucceededOrFailed
               ? `scale-95 hover:scale-100 hover:opacity-100`
               : `scale-0`
-          )}>
+          )}
+        >
           <RxReload className="w-3 h-3 md:w-4 md:h-4 lg:w-5 lg:h-5" />
           <span
             className={cn(
@@ -438,14 +442,16 @@ export function Panel({
                 : zoomLevel > 40
                 ? `text-2xs md:text-xs lg:text-sm`
                 : `text-3xs md:text-2xs lg:text-xs`
-            )}>
+            )}
+          >
             Redraw
           </span>
         </div>
         <EditModal
           isEnabled={hasSucceededOrFailed}
           existingPrompt={prompt}
-          onSave={handleSavePrompt}>
+          onSave={handleSavePrompt}
+        >
           <>
             <div
               className={cn(
@@ -457,7 +463,8 @@ export function Panel({
                 mouseOver && hasSucceededOrFailed
                   ? `scale-95 hover:scale-100 hover:opacity-100`
                   : `scale-0`
-              )}>
+              )}
+            >
               <RxPencil2 className="w-3 h-3 md:w-4 md:h-4 lg:w-5 lg:h-5" />
               <span
                 className={cn(
@@ -466,7 +473,8 @@ export function Panel({
                     : zoomLevel > 40
                     ? `text-2xs md:text-xs lg:text-sm`
                     : `text-3xs md:text-2xs lg:text-xs`
-                )}>
+                )}
+              >
                 Edit
               </span>
             </div>
@@ -483,7 +491,8 @@ export function Panel({
                 mouseOver && hasSucceededOrFailed
                   ? `scale-95 hover:scale-100 hover:opacity-100`
                   : `scale-0`
-              )}>
+              )}
+            >
               {!speaking ? (
                 <HiSpeakerXMark className="w-3 h-3 md:w-4 md:h-4 lg:w-5 lg:h-5" />
               ) : (
@@ -496,7 +505,8 @@ export function Panel({
                     : zoomLevel > 40
                     ? `text-2xs md:text-xs lg:text-sm`
                     : `text-3xs md:text-2xs lg:text-xs`
-                )}>
+                )}
+              >
                 sound
               </span>
             </div>
