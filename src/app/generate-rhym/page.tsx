@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { BiChevronLeft } from "react-icons/bi";
 
-const SUNO = "DJLSkR7Hft7t4y3OuQiklIxB9Nfa10w";
+const SUNO = "82o+0+c/WNeMwL2ucjA01SuiCicYHXCK";
 const SUNO1 = "0olSKccoLrQQgDR+OI9AssB28wKOyOvV";
 const SUNO2 = "NlSzxywAxOfAO48Z0V4wQCVaKyxNUddi";
 
