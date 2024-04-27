@@ -28,7 +28,7 @@ const HomeContent = () => {
           <div className="text-center">
             <div>
               <h1 className="text-[1rem] textShadow sm:text-6xl whitespace-nowrap uppercase text-white  font-black ">
-                AI-Assessment
+                AI-CADEMY
               </h1>
             </div>
           </div>
