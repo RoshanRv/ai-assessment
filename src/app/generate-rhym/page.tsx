@@ -9,6 +9,7 @@ import { BiChevronLeft } from "react-icons/bi";
 const SUNO = "82o+0+c/WNeMwL2ucjA01SuiCicYHXCK";
 const SUNO1 = "0olSKccoLrQQgDR+OI9AssB28wKOyOvV";
 const SUNO2 = "NlSzxywAxOfAO48Z0V4wQCVaKyxNUddi";
+const SUNO4 = "eIOwn4Pfkw/7Ql1QnkN+WV8PsEnLPMy9";
 
 const GenerateRhym = () => {
   const router = useRouter();
@@ -25,10 +26,10 @@ const GenerateRhym = () => {
       title: "5 Tables",
       url: "https://cdn1.suno.ai/33462f42-379e-4758-9184-033acdd509e3.mp3",
     },
-    {
-      title: "Periodic Table from 1 - 10",
-      url: "https://audiopipe.suno.ai/?item_id=fde1e2bc-9b4f-4a4c-af83-231ce31758f2",
-    },
+    // {
+    //   title: "Periodic Table from 1 - 10",
+    //   url: "https://audiopipe.suno.ai/?item_id=fde1e2bc-9b4f-4a4c-af83-231ce31758f2",
+    // },
   ]);
 
   const handleGenerateSong = async () => {
@@ -42,7 +43,7 @@ const GenerateRhym = () => {
         },
         {
           headers: {
-            "api-key": SUNO,
+            "api-key": SUNO4,
           },
         }
       );
@@ -60,11 +61,12 @@ const GenerateRhym = () => {
   const getSong = async () => {
     try {
       const { data } = await axios.get(
-        `https://api.sunoaiapi.com/api/v1/gateway/feed/${generatedIds}`,
+        `https://api.sunoaiapi.com/api/v1/gateway/query?ids=a70a5b22-8f1b-4fad-a387-c871e864c35c`,
 
         {
           headers: {
-            "api-key": SUNO,
+            "api-key": SUNO4,
+            "Content-Type": "application/json",
           },
         }
       );

@@ -228,3 +228,8 @@ html .dark {
   background-image: url(../assets/bg.png);
   background-size: 100%;
 }
+
+.bg-comic {
+  background-image: url(../assets/comic_bg.png);
+  background-size: 100%;
+}

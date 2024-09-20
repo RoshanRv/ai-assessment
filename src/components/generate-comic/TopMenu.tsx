@@ -42,6 +42,7 @@ import { Label } from "./UI/label";
 import { Input } from "./UI/input";
 import Button from "../button/Button";
 import useQuizz from "@/store/useQuiz";
+import Link from "next/link";
 
 const layoutIcons: Partial<Record<LayoutName, StaticImageData>> = {
   Layout0: layoutPreview0,
@@ -263,12 +264,16 @@ export function TopMenu() {
           `flex  flex-grow flex-col space-y-2 md:space-y-0 md:flex-row items-center md:space-x-3 w-full md:w-auto`
         )}
       >
-        <div className="flex w-full">
-          <div className="flex w-10/12 mx-auto justify-between">
+        <div className="flex w-full items-center">
+          <Link href={"/"} className="text-3xl font-bold mr-4">
+            <h3>StoryVerse</h3>
+          </Link>
+          {/* ### INPUT #### */}
+          <div className="flex w-8/12 mx-auto justify-between">
             <input
               placeholder="Topic (eg. Velocity)"
               className={
-                "p-4 border-2 border-priClr bg-white  boxShadow outline-0 w-full"
+                "p-4 py-2.5 border-2 border-priClr bg-white  boxShadow outline-0 w-full"
               }
               // disabled={atLeastOnePanelIsBusy}
               onChange={(e) => {
@@ -282,6 +287,7 @@ export function TopMenu() {
               value={draftPromptB}
             />
           </div>
+          {/* #### BTN ###### */}
           <button
             disabled={!draftPrompt?.trim().length || isBusy}
             onClick={() => {

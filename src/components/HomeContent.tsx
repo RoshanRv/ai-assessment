@@ -1,6 +1,9 @@
 import { motion, useScroll, useSpring, useTransform } from "framer-motion";
+import { ChevronDown } from "lucide-react";
 import Link from "next/link";
-import { AiOutlineDoubleRight } from "react-icons/ai";
+import { AiOutlineDoubleRight, AiOutlineDown } from "react-icons/ai";
+import { FaTools } from "react-icons/fa";
+import { RiToolsFill } from "react-icons/ri";
 
 const HomeContent = () => {
   const { scrollYProgress } = useScroll();
@@ -28,7 +31,7 @@ const HomeContent = () => {
           <div className="text-center">
             <div>
               <h1 className="text-[1rem] textShadow sm:text-6xl whitespace-nowrap uppercase text-white  font-black ">
-                AI-CADEMY
+                StoryVerse
               </h1>
             </div>
           </div>
@@ -46,30 +49,32 @@ const HomeContent = () => {
       <div className=" text-center flex flex-col gap-10">
         <section>
           <h1 className=" text-3xl font-bold text-white">
-            AI Powered Assessment Revolutionizing Skill Mastery
+            Craft Your Narrative
           </h1>
         </section>
         <section>
           <h1 className="text-lg font-medium text-center text-white">
-            Revolutionize Your Learning Adventure: Experience Education Where AI
-            Innovation Drives Personalized Support and Unlocks Potential
+            A personalized storytelling platform where your creativity drives
+            immersive, custom-made narratives. Shape characters, explore new
+            worlds, and let StoryScape bring your unique stories to life using
+            advanced AI
           </h1>
         </section>
         <section className="flex justify-center gap-6">
           <Link
-            href={"/dashboard"}
+            href={"#craft"}
             className="bg-white  text-priClr capitalize border-[3px] border-black boxShadow flex items-center gap-2 px-7 py-3 rounde-md shadow-black shadow-sm font-semibold"
           >
-            <p className="font-bold">Go To Dashboard</p>
-            <AiOutlineDoubleRight className="text-[23px] text-priClr" />
+            <p className="font-bold">Craft</p>
+            <RiToolsFill className="text-[23px] text-priClr" />
           </Link>
-          <Link
+          {/* <Link
             href={"/login"}
             className="bg-priClr  text-white capitalize border-[3px] border-black boxShadow flex items-center gap-2 px-7 py-3 rounde-md shadow-black shadow-sm font-semibold"
           >
             <p className="font-bold">Login</p>
             <AiOutlineDoubleRight className="text-[23px] text-white" />
-          </Link>
+          </Link> */}
         </section>
       </div>
     </motion.div>
