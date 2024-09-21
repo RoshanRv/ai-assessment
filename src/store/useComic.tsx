@@ -94,7 +94,7 @@ export const useStore = create<{
   currentNbPanelsPerPage: 4,
   maxNbPanelsPerPage: 4,
   currentNbPages: 1,
-  maxNbPages: 1,
+  maxNbPages: 2,
   previousNbPanels: 0,
   currentNbPanels: 4,
   maxNbPanels: 4,
