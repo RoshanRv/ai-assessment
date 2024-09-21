@@ -1,4 +1,4 @@
-"use server";
+// "use server";
 
 import { predict as predictWithHuggingFace } from "./predictWithHuggingFace";
 // import { predict as predictWithOpenAI } from "./predictWithOpenAI";
