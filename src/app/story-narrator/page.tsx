@@ -19,51 +19,7 @@ const StoryNarrator = () => {
       content: `Imagine you're a creative story narrator. You're here to help me create an interactive story based on user input. Generate the story in the topic of <user input title> and in the theme of <user input theme>. You'll kick things off with an opening line, then generate multiple options of the story flow and ask for the user to select options and guide the story flow. With each response, you'll continue the story and generate new options, waiting for the user to select again, making the process fun and engaging. The response or solution you're providing should always be in JSON FORMAT.\n\nFor example title: "Lost City", theme: "Adventure":\n\nNow, let's begin our story!\n\nYou've always been fascinated by the stories of a hidden city deep within the jungle. They call it Zerzura, a place where ancient treasures and mysterious artifacts lie waiting to be discovered.\n\nAs you venture into the dense foliage, the sounds of the jungle grow louder, and the air thickens with humidity. You push through the underbrush, your heart racing with excitement.\n\nHere are your options:\n\n json\n{\n  \"options\": [\n    {\n      \"description\": \"Follow the sound of a nearby river, which might lead you to Zerzura\"\n    },\n    {\n      \"description\": \"Climb one of the tall trees to get a better view of your surroundings\"\n    },\n    {\n      \"description\": \"Search for any signs of recent human presence or ancient ruins\"\n    }\n  ]\n}\n\n\nWhich option do you choose? Please respond in JSON format with the selected option number (1, 2, or 3).`,
     },
   ]);
-  // const [stories, setStories] = useState<
-  //   { story: string; options: { description: string }[] }[]
-  // >([
-  //   {
-  //     story:
-  //       "Let's begin our story!\n\nYou've always been drawn to the sea and the mystery of a lost island that's rumored to be hidden in the vast expanse of the Pacific Ocean. They call it Isla Perdida, a place where ancient treasures and untold riches lie waiting to be discovered.\n\nAs you set sail on your trusty vessel, the \"Sea Dragon\", the warm sun beats down on your face, and the salty sea air fills your lungs. You've spent years studying the maps and tales of previous explorers who claim to have seen the island's outline on the horizon. Your crew is a mix of seasoned sailors and skilled adventurers, all eager to uncover the secrets of Isla Perdida.\n\nAs you navigate through the choppy waters, the crew begins to sense that they're getting close. The atmosphere is electric with anticipation.\n\n",
-  //     options: [
-  //       {
-  //         description:
-  //           "Order your crew to drop anchor and launch a small boat to scout out the island's coastline",
-  //       },
-  //       {
-  //         description:
-  //           "Continue sailing at full speed, aiming to catch the island off guard before it has time to react",
-  //       },
-  //       {
-  //         description:
-  //           "Take a moment to review the maps and charts with your crew, making sure you're all on the same page about the island's layout and potential dangers",
-  //       },
-  //     ],
-  //   },
-  //   {
-  //     story:
-  //       "You decide to order your crew to drop anchor and launch a small boat to scout out the island's coastline. Your trusted first mate, Tom, expertly maneuvers the \"Sea Dragon\" into position, and a small inflatable dinghy is lowered into the water.\n\nAs you take the helm of the dinghy, your crew hands you a pair of binoculars and a compass. You set off towards the island, following the coastline as it curves around a small cove. The sea is calm, and the sun is high in the sky, casting a golden glow over the water.\n\nAs you draw closer to the island, you notice that the vegetation appears to be thick and lush, with vines and creepers crawling up the trunks of massive trees. You see what looks like a small clearing ahead, surrounded by a ring of large stones.\n\nSuddenly, your binoculars pick out something strange - a piece of wreckage from an old ship, half-buried in the sand. It looks like it's been there for years, but something about it seems... wrong.\n\n",
-  //     options: [
-  //       {
-  //         description:
-  //           "Investigate the wreckage and see if you can find any clues about what happened to the ship",
-  //       },
-  //       {
-  //         description:
-  //           "Head straight for the clearing and the ring of stones - something about it feels significant",
-  //       },
-  //       {
-  //         description:
-  //           "Circle back around the island's coastline, making sure there are no other signs of recent human activity or danger",
-  //       },
-  //     ],
-  //   },
-  //   {
-  //     story:
-  //       "You decide to investigate the wreckage and see if you can find any clues about what happened to the ship. As you draw closer, you notice that the debris is scattered all over the beach, but there's a large piece of hull planking that appears to have been torn off in some kind of accident.\n\nAs you examine the planking, you realize that it's not just any ordinary wood - it's an old-style wooden plank, similar to those used on ships from centuries ago. You start to feel a thrill of excitement as you wonder what could be the story behind this ancient shipwreck.\n\nYou begin to search around the beach and nearby rocks for other clues. After a few minutes of searching, your hands brush against something hard in the sand. It's an old iron anchor, partially buried in the sand.\n\nYou pull out the anchor and examine it closely. The inscription on the anchor reads: \"Property of the Royal Navy, 1750\". You can't believe what you're seeing - this is a piece of history that could change everything!\n\nWith the discovery of this ancient shipwreck, your crew gathers around to hear your excited tales of adventure and discovery. Together, you all agree that finding Isla Perdida was only the beginning of an incredible journey.\n\n Congratulations, you've reached the end of the story! I hope you enjoyed the ride!\n\nHere's a final summary:\n\n**You discovered:**\n\n* A hidden island (Isla Perdida)\n* An ancient shipwreck from 1750\n* A mysterious and potentially significant clearing on the island\n\n**The crew is...**\n\n* Excited by your discoveries and eager to explore further\n* Confident in their skills and abilities as sailors and adventurers\n* United in their quest for adventure and discovery!\n\nAnd that's where our story comes to an end. Thank you so much for playing along! Would you like to play another interactive story?",
-  //     options: [],
-  //   },
-  // ]);
+
   const [stories, setStories] = useState<
     { story: string; options: { description: string }[] }[]
   >([]);
