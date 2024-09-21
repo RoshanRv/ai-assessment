@@ -2,7 +2,7 @@
 
 import axios from "axios";
 import { BiChevronLeft } from "react-icons/bi";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { useRef, useState, useEffect } from "react";
 import useUser from "@/store/useUser";
 import { title } from "process";
@@ -10,6 +10,11 @@ import { useStore } from "@/store/useComic";
 import { cn } from "@/lib/generate-comic/cn";
 import { fonts } from "@/lib/generate-comic/fonts";
 import { FaGear } from "react-icons/fa6";
+import video1 from "../../../public/video1.mp4";
+import video2 from "../../../public/video2.mp4";
+import video3 from "../../../public/video3.mp4";
+import video4 from "../../../public/video4.mp4";
+import video5 from "../../../public/video5.mp4";
 
 type Rhymes = {
   id?: string;
@@ -20,6 +25,7 @@ type Rhymes = {
 const GenerateRhym = () => {
   const router = useRouter();
   const [input, setInput] = useState("");
+  const resultedParam = useSearchParams().get("resulted");
   const [generatedIds, setGeneratedIds] = useState("");
   const [url, setUrl] = useState("");
   // const videoRef = useRef<HTMLVideoElement | null>(null);
@@ -27,6 +33,7 @@ const GenerateRhym = () => {
   const isGeneratingStory = useStore((s) => s.isGeneratingStory);
   const setGeneratingStory = useStore((s) => s.setGeneratingStory);
   const videoRef = useRef<HTMLVideoElement | null>(null);
+  const [isResulted, setIsResulted] = useState(resultedParam);
   const [old, setOlds] = useState<Rhymes[]>([
     // {
     //   title: "Periodic Table from 1 - 10",
@@ -43,6 +50,29 @@ const GenerateRhym = () => {
     //   video_url:
     //     "https://cdn1.suno.ai/cfeadbf3-447e-4228-90d7-24cdd00bc47e.mp4",
     // },
+  ]);
+
+  const [lists, setLists] = useState<Rhymes[]>([
+    {
+      title: "Video 1",
+      video_url: video1,
+    },
+    {
+      title: "Video 2",
+      video_url: video2,
+    },
+    {
+      title: "Video 3",
+      video_url: video3,
+    },
+    {
+      title: "Video 4",
+      video_url: video4,
+    },
+    {
+      title: "Video 5",
+      video_url: video5,
+    },
   ]);
 
   const getRhymes = async () => {
@@ -108,9 +138,7 @@ const GenerateRhym = () => {
 
   const getSong = async (songId: string) => {
     try {
-      const { data } = await axios.get(
-        `http://localhost:3001/api/get?ids=${songId}`
-      );
+      const { data } = await axios.get(` `);
 
       if (data[0].status !== "complete") {
         setTimeout(() => {
@@ -126,7 +154,7 @@ const GenerateRhym = () => {
       setOlds([]);
       await setRhymes(updatedRhymes);
       // await getRhymes();
-      window.location.reload();
+      window.location.href = "/generate-rhym?resulted=true";
     } catch (err) {
       console.log(err);
       getSong(songId);
@@ -173,6 +201,7 @@ const GenerateRhym = () => {
           </div>
         </div>
       </div>
+
       <div className="flex gap-4 items-center ">
         <div
           onClick={() => router.push("/dashboard")}
@@ -206,9 +235,41 @@ const GenerateRhym = () => {
         </button>
       </div>
 
+      {/* Result Rhymes */}
+      {isResulted && old.length > 0 && (
+        <>
+          <h3 className="text-xl font-semibold py-6">Result</h3>
+          <div className="grid grid-cols-3 gap-10 items-center">
+            <div></div>
+            <div
+              key={old[old.length - 1].video_url}
+              className="p-4 boxShadow flex flex-col gap-4 bg-white border-2 border-priClr"
+            >
+              <h4 className="text-lg font-semibold">
+                {old[old.length - 1].title}
+              </h4>
+              <video ref={videoRef} controls>
+                <source src={old[old.length - 1].video_url} type="video/mp4" />
+              </video>
+            </div>
+          </div>
+        </>
+      )}
+
       {/* Previous Rhymes */}
-      <h3 className="text-xl font-semibold py-6">Rhymes</h3>
+      <h3 className="text-xl font-semibold py-6">Previous Rhymes</h3>
       <div className="grid grid-cols-3 gap-10 items-center">
+        {lists.map((list, index) => (
+          <div
+            key={index}
+            className="p-4 boxShadow flex flex-col gap-4 bg-white border-2 border-priClr"
+          >
+            <h4 className="text-lg font-semibold">{list.title}</h4>
+            <video controls>
+              <source src={list.video_url} type="video/mp4" />
+            </video>
+          </div>
+        ))}
         {old.map((ol, index) => (
           <div
             key={ol.video_url}
