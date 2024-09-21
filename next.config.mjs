@@ -12,6 +12,24 @@ const nextConfig = {
       },
     ],
   },
+  webpack: (config, { isServer }) => {
+    // Add file-loader to handle video files like mp4
+    config.module.rules.push({
+      test: /\.(mp4|avi|mov|wmv|flv)$/, // Match video file extensions
+      use: [
+        {
+          loader: "file-loader",
+          options: {
+            name: "[name].[ext]", // Keep the original file name
+            outputPath: "public/", // Output the videos to this folder
+            publicPath: "/_next/public/", // Path Next.js will use to access the videos
+          },
+        },
+      ],
+    });
+
+    return config;
+  },
 };
 
 export default nextConfig;
