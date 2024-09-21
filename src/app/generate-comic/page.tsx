@@ -82,10 +82,19 @@ export default function Main() {
   const hasNoPendingGeneration = numberOfPendingGenerations === 0;
 
   const hasStillMorePagesToGenerate = currentNbPages < maxNbPages;
+  console.log("currentNbPages", currentNbPages);
+  console.log("maxNbPages", maxNbPages);
+
   const [isFullStory, setIsFullStory] = useState(false);
 
   const showNextPageButton =
     hasAtLeastOnePage && hasNoPendingGeneration && hasStillMorePagesToGenerate;
+
+  console.log("hasAtLeastOnePage", hasAtLeastOnePage);
+  console.log("hasNoPendingGeneration", hasNoPendingGeneration);
+  console.log("hasStillMorePagesToGenerate", hasStillMorePagesToGenerate);
+  console.log("showNextPageButton", showNextPageButton);
+
   const [story, setStory] = useState<string>("");
   const [storyCation, setStoryCaption] = useState<string>("");
   /*
@@ -101,7 +110,12 @@ export default function Main() {
 
   useEffect(() => {
     if (maxNbPages !== userDefinedMaxNumberOfPages) {
-      setMaxNbPages(userDefinedMaxNumberOfPages);
+      console.log(
+        "userDefinedMaxNumberOfPages changed, updating maxNbPages",
+        userDefinedMaxNumberOfPages
+      );
+
+      setMaxNbPages(2); // need to change this to userDefinedMaxNumberOfPages
     }
   }, [maxNbPages, userDefinedMaxNumberOfPages]);
 

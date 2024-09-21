@@ -1,4 +1,4 @@
-import { predict } from "./predict";
+import { predict } from "./predictWithHuggingFace";
 import { cleanJson } from "@/lib/generate-comic/cleanJson";
 import { createZephyrPrompt } from "@/lib/generate-comic/createZephyrPrompt";
 import { dirtyGeneratedPanelCleaner } from "@/lib/generate-comic/dirtyGeneratedPanelCleaner";
