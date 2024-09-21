@@ -101,7 +101,7 @@ export default function Home() {
               listening experience.
             </p>
             <Link
-              href={"/"}
+              href={"/story-narrator"}
               className="bg-priClr  text-white capitalize border-[3px] border-black boxShadow flex items-center gap-2 px-7 py-3 rounde-md shadow-black shadow-sm font-semibold"
             >
               <p className="font-bold">Explore</p>
