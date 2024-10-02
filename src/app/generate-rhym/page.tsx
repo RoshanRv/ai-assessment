@@ -2,7 +2,7 @@
 
 import axios from "axios";
 import { BiChevronLeft } from "react-icons/bi";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { useRef, useState, useEffect } from "react";
 import useUser from "@/store/useUser";
 import { title } from "process";
@@ -15,11 +15,13 @@ type Rhymes = {
   id?: string;
   title: string;
   video_url: string;
+  audio_url?: string;
 };
 
 const GenerateRhym = () => {
   const router = useRouter();
   const [input, setInput] = useState("");
+  const resultedParam = useSearchParams().get("resulted");
   const [generatedIds, setGeneratedIds] = useState("");
   const [url, setUrl] = useState("");
   // const videoRef = useRef<HTMLVideoElement | null>(null);
@@ -27,6 +29,7 @@ const GenerateRhym = () => {
   const isGeneratingStory = useStore((s) => s.isGeneratingStory);
   const setGeneratingStory = useStore((s) => s.setGeneratingStory);
   const videoRef = useRef<HTMLVideoElement | null>(null);
+  const [isResulted, setIsResulted] = useState(resultedParam);
   const [old, setOlds] = useState<Rhymes[]>([
     // {
     //   title: "Periodic Table from 1 - 10",
@@ -56,6 +59,7 @@ const GenerateRhym = () => {
         id: d.id,
         title: d.title,
         video_url: d.video_url,
+        audio_url: d.audio_url,
       }));
       setOlds(dbRhymes);
       setTimeout(() => {
@@ -112,6 +116,10 @@ const GenerateRhym = () => {
         `http://localhost:3001/api/get?ids=${songId}`
       );
 
+      // if (data[0].audio_url) {
+      //   setGeneratingStory(false);
+      // }
+
       if (data[0].status !== "complete") {
         setTimeout(() => {
           getSong(songId);
@@ -119,14 +127,22 @@ const GenerateRhym = () => {
         return;
       }
 
-      const url = data[0]?.video_url;
+      const video_url = data[0]?.video_url;
+      const audio_url = data[0]?.audio_url;
       const prompt = data[0].gpt_description_prompt;
-      url && setUrl(url);
-      const updatedRhymes = [{ id: songId, title: prompt, video_url: url }];
+      video_url && setUrl(video_url);
+      const updatedRhymes = [
+        {
+          id: songId,
+          title: prompt,
+          video_url: video_url,
+          audio_url: audio_url,
+        },
+      ];
       setOlds([]);
       await setRhymes(updatedRhymes);
       // await getRhymes();
-      window.location.reload();
+      window.location.href = "/generate-rhym?resulted=true";
     } catch (err) {
       console.log(err);
       getSong(songId);
@@ -173,6 +189,7 @@ const GenerateRhym = () => {
           </div>
         </div>
       </div>
+
       <div className="flex gap-4 items-center ">
         <div
           onClick={() => router.push("/dashboard")}
@@ -206,8 +223,42 @@ const GenerateRhym = () => {
         </button>
       </div>
 
+      {/* Result Rhymes */}
+      {isResulted && old.length > 0 && (
+        <>
+          <h3 className="text-xl font-semibold py-6">Result</h3>
+          <div className="grid grid-cols-3 gap-10 items-center">
+            <div></div>
+            <div
+              key={old[old.length - 1].video_url}
+              className="p-4 boxShadow flex flex-col gap-4 bg-white border-2 border-priClr"
+            >
+              <h4 className="text-lg font-semibold">
+                {old[old.length - 1].title}
+              </h4>
+              {old[old.length - 1].video_url && (
+                <video ref={videoRef} controls>
+                  <source
+                    src={old[old.length - 1].video_url}
+                    type="video/mp4"
+                  />
+                </video>
+              )}
+              {old[old.length - 1].audio_url && (
+                <audio controls>
+                  <source
+                    src={old[old.length - 1].audio_url}
+                    type="audio/mp3"
+                  />
+                </audio>
+              )}
+            </div>
+          </div>
+        </>
+      )}
+
       {/* Previous Rhymes */}
-      <h3 className="text-xl font-semibold py-6">Rhymes</h3>
+      <h3 className="text-xl font-semibold py-6">Previous Rhymes</h3>
       <div className="grid grid-cols-3 gap-10 items-center">
         {old.map((ol, index) => (
           <div
@@ -215,9 +266,16 @@ const GenerateRhym = () => {
             className="p-4 boxShadow flex flex-col gap-4 bg-white border-2 border-priClr"
           >
             <h4 className="text-lg font-semibold">{ol.title}</h4>
-            <video ref={index === old.length - 1 ? videoRef : null} controls>
-              <source src={ol.video_url} type="video/mp4" />
-            </video>
+            {ol.video_url && (
+              <video ref={index === old.length - 1 ? videoRef : null} controls>
+                <source src={ol.video_url} type="video/mp4" />
+              </video>
+            )}
+            {ol.audio_url && (
+              <audio controls>
+                <source src={ol.audio_url} type="audio/mp3" />
+              </audio>
+            )}
           </div>
         ))}
       </div>
