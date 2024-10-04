@@ -6,8 +6,8 @@ import Toast from "@/components/Toast";
 const inter = Outfit({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "StoryVerse",
-  description: "Craft Your Narrative",
+  title: "AI-CADEMY",
+  description: "AI Powered Assessment Revolutionizing Skill Mastery",
 };
 
 export default function RootLayout({

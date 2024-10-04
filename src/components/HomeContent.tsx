@@ -31,7 +31,7 @@ const HomeContent = () => {
           <div className="text-center">
             <div>
               <h1 className="text-[1rem] textShadow sm:text-6xl whitespace-nowrap uppercase text-white  font-black ">
-                StoryVerse
+                AI-Cademy
               </h1>
             </div>
           </div>
@@ -49,7 +49,7 @@ const HomeContent = () => {
       <div className=" text-center flex flex-col gap-10">
         <section>
           <h1 className=" text-3xl font-bold text-white">
-            Craft Your Narrative
+            AI Powered Assessment Revolutionizing Skill Mastery
           </h1>
         </section>
         <section>
@@ -65,8 +65,8 @@ const HomeContent = () => {
             href={"#craft"}
             className="bg-white  text-priClr capitalize border-[3px] border-black boxShadow flex items-center gap-2 px-7 py-3 rounde-md shadow-black shadow-sm font-semibold"
           >
-            <p className="font-bold">Craft</p>
-            <RiToolsFill className="text-[23px] text-priClr" />
+            <p className="font-bold">Explore</p>
+            <ChevronDown className="text-[23px] text-priClr" />
           </Link>
           {/* <Link
             href={"/login"}

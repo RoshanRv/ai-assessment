@@ -9,6 +9,7 @@ import useUser from "@/store/useUser";
 import COMIC from "@/assets/ComicSpread-removebg-preview.png";
 import RHYM from "@/assets/rhyme3.png";
 import NARR from "@/assets/story-narr3.png";
+import ASSESMENT from "@/assets/asses2.png";
 import Link from "next/link";
 
 export default function Home() {
@@ -59,30 +60,32 @@ export default function Home() {
             </Link>
           </div>
         </div>
-        {/* ##### RHYME ####### */}
+        {/* ##### AI ASSESMENT ####### */}
         <div className="flex gap-14 justify-between w-7/12 mx-auto mt-6 items-start">
           {/* LEFT */}
-          <div className="flex gap-2 items-start justify-start flex-col">
-            <h3 className="font-bold text-4xl text-shadow text-priClr">
-              Rhymes Generator
+          <div className="flex gap-2 items-start justify-center flex-col">
+            <h3 className="font-bold text-4xl text-shadow text-priClr whitespace-nowrap ">
+              AI Assessment
             </h3>
             <p className="shrink-1 text-lg">
-              Find the perfect rhyme for your poems, songs, or stories with the
-              Rhymes Generator. Powered by AI, it offers creative and rhythmic
-              word pairings to enhance your lyrical creations effortlessly.
+              Story Narrator brings your tales to life with captivating voice
+              narration. Whether it's a bedtime story or a grand adventure, the
+              AI-powered narrator adds emotion and depth, creating an immersive
+              listening experience.
             </p>
             <Link
-              href={"/generate-rhym"}
+              href={"/assessment/none"}
               className="bg-priClr  text-white capitalize border-[3px] border-black boxShadow flex items-center gap-2 px-7 py-3 rounde-md shadow-black shadow-sm font-semibold"
             >
               <p className="font-bold">Explore</p>
             </Link>
           </div>
           {/* RIGHT */}
-          <div className="relative w-[28rem] h-96 shrink-0">
-            <Image alt="" src={RHYM} fill />
+          <div className="shrink-0  ">
+            <Image alt="" src={ASSESMENT} />
           </div>
         </div>
+
         {/* ##### STORY NARRATOR ####### */}
         <div className="flex gap-14 justify-between w-7/12 mx-auto mt-6 items-start">
           {/* LEFT */}
@@ -106,6 +109,30 @@ export default function Home() {
             >
               <p className="font-bold">Explore</p>
             </Link>
+          </div>
+        </div>
+        {/* ##### RHYME ####### */}
+        <div className="flex gap-14 justify-between w-7/12 mx-auto mt-6 items-start">
+          {/* LEFT */}
+          <div className="flex gap-2 items-start justify-start flex-col">
+            <h3 className="font-bold text-4xl text-shadow text-priClr">
+              Rhymes Generator
+            </h3>
+            <p className="shrink-1 text-lg">
+              Find the perfect rhyme for your poems, songs, or stories with the
+              Rhymes Generator. Powered by AI, it offers creative and rhythmic
+              word pairings to enhance your lyrical creations effortlessly.
+            </p>
+            <Link
+              href={"/generate-rhym"}
+              className="bg-priClr  text-white capitalize border-[3px] border-black boxShadow flex items-center gap-2 px-7 py-3 rounde-md shadow-black shadow-sm font-semibold"
+            >
+              <p className="font-bold">Explore</p>
+            </Link>
+          </div>
+          {/* RIGHT */}
+          <div className="relative w-[28rem] h-96 shrink-0">
+            <Image alt="" src={RHYM} fill />
           </div>
         </div>
       </section>

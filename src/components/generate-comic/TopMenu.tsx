@@ -266,7 +266,7 @@ export function TopMenu() {
       >
         <div className="flex w-full items-center">
           <Link href={"/"} className="text-3xl font-bold mr-4">
-            <h3>StoryVerse</h3>
+            <h3>AI-Cademy</h3>
           </Link>
           {/* ### INPUT #### */}
           <div className="flex w-8/12 mx-auto justify-between">

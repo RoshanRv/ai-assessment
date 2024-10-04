@@ -5,7 +5,6 @@ import { BiChevronLeft } from "react-icons/bi";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { useRef, useState, useEffect } from "react";
 import useUser from "@/store/useUser";
-import { title } from "process";
 import { useStore } from "@/store/useComic";
 import { cn } from "@/lib/generate-comic/cn";
 import { fonts } from "@/lib/generate-comic/fonts";
